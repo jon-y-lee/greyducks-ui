@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './App.css';
 import {GoogleOAuthProvider} from '@react-oauth/google';
 import Calendar from './components/Calendar'; // We'll create this component next
@@ -7,47 +7,40 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import Home from "./components/Home";
+import ResponsiveAppBar from "./components/ResponsiveAppBar";
+import {AuthContext, UserAuthentication} from './contexts/auth/AuthContext';
 
 function App() {
-  const router = createBrowserRouter([
-    {
-      path: "/calendar",
-      element: <Calendar/>,
-    },
-    {
-      path: "/",
-      element: <div/>,
-    },
 
-  ]);
+    const toggleAuth = (name: string, token: string) => {
+        setCurrentAuthenticatedUser({name, token, toggleAuth})
+    };
 
-  return (
-      <div className={"App"}>
-        <GoogleOAuthProvider
-            clientId="312804416596-b9fg9pvslkk3vnmbtlngertcr6qqr653.apps.googleusercontent.com"
-        >
-          <RouterProvider router={router}/>
-        </GoogleOAuthProvider>
-      </div>
-  );
-  // return (
-  //   <div className="App">
-  //     <header className="App-header">
-  //       <img src={logo} className="App-logo" alt="logo" />
-  //       <p>
-  //         Edit <code>src/App.tsx</code> and save to reload.
-  //       </p>
-  //       <a
-  //         className="App-link"
-  //         href="https://reactjs.org"
-  //         target="_blank"
-  //         rel="noopener noreferrer"
-  //       >
-  //         Learn React
-  //       </a>
-  //     </header>
-  //   </div>
-  // );
+    const [currentAuthenticatedUser, setCurrentAuthenticatedUser]
+        = useState<UserAuthentication>({name: null, token: null, toggleAuth: toggleAuth});
+    const router = createBrowserRouter([
+        {
+            path: "calendar",
+            element: <><ResponsiveAppBar/><Calendar/></>,
+        },
+        {
+            path: "/",
+            element: <><ResponsiveAppBar/><Home/></>,
+        },
+    ]);
+
+    return (
+        <div className={"App"}>
+            <AuthContext.Provider value={currentAuthenticatedUser}>
+                <GoogleOAuthProvider
+                    clientId="312804416596-b9fg9pvslkk3vnmbtlngertcr6qqr653.apps.googleusercontent.com"
+                >
+                    <RouterProvider router={router}/>
+                </GoogleOAuthProvider>
+            </AuthContext.Provider>
+        </div>
+    );
 }
 
 export default App;

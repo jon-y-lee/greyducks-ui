@@ -5,6 +5,7 @@ import {Button} from "@mui/material";
 
 const Calendar = () => {
 
+    console.log("calendar")
     const [token, setToken] = useState("");
     const responseGoogle = (response: any) => {
         console.log(response);
@@ -59,7 +60,8 @@ const Calendar = () => {
     );
 
     return (
-        <div className={"App"}>
+        <div >
+            asdfasdfasdf
             <br/>
             {profile ? (
                 <div>
