@@ -4,6 +4,7 @@ import Typography from "@mui/material/Typography";
 import {googleLogout, useGoogleLogin} from "@react-oauth/google";
 import axios from "axios";
 import {AuthContext} from '../contexts/auth/AuthContext';
+import {LOCAL_STORE_KEYS} from "./Constants";
 
 interface LoginModalInterface {
     open: boolean,
@@ -36,7 +37,6 @@ const LoginModal = (loginModalInterface: LoginModalInterface) => {
         onSuccess: (codeResponse: any) => {
             console.log("Success:" + JSON.stringify(codeResponse))
             setUser(codeResponse)
-            userContext?.toggleAuth("jon lee", "asdf");
             handleClose()
         },
         onError: (error) => console.log('Login Failed:', error)
@@ -58,6 +58,24 @@ const LoginModal = (loginModalInterface: LoginModalInterface) => {
                     })
                     .then((res) => {
                         setProfile(res.data);
+                        const userPrinciple = {
+                            name: res.data?.name,
+                            token: user?.access_token,
+                            email: res.data?.email,
+                            id: res.data?.email,
+                            given_name: res.data?.given_name,
+                            family_name: res.data?.family_name,
+                            picture: res.data?.picture,
+                        }
+                        userContext?.toggleAuth(res.data?.name,
+                            user.access_token,
+                            userPrinciple.email,
+                            userPrinciple.id,
+                            userPrinciple.given_name,
+                            userPrinciple.family_name,
+                            userPrinciple.picture);
+                        localStorage.setItem(LOCAL_STORE_KEYS.USER_PRINCIPLE, JSON.stringify(userPrinciple));
+
                     })
                     .catch((err) => console.log(err));
 
@@ -79,59 +97,38 @@ const LoginModal = (loginModalInterface: LoginModalInterface) => {
         [user]
     );
     return (
-        <AuthContext.Consumer>
-            {user => (
-                <Modal
-                    open={open}
-                    // close={}
-                    // onBackdropClick={() => setOpen(false)
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                >
-                    <Box sx={style}>
-                        <Typography id="modal-modal-title" variant="h6" component="h2">
-                            Log In
-                        </Typography>
-                        <Typography id="modal-modal-description" sx={{mt: 2}}>
-                            continuing you agree to our user agreements and acknowledge that you understand our Privacy
-                            Policy
-                        </Typography>
-                        <Typography id="modal-modal-description" sx={{mt: 3}}>
-                            {profile ? (
-                                <div>
-                                    <img src={profile.picture} alt="user image"/>
-                                    <h3>User Logged in</h3>
-                                    <p>Name: {profile.name}</p>
-                                    <p>Email Address: {profile.email}</p>
-                                    <br/>
-                                    <br/>
-                                    <button onClick={logOut}>Log out</button>
+        <Modal
+            open={open}
+            // close={}
+            // onBackdropClick={() => setOpen(false)
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+        >
+            <Box sx={style}>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                    Log In
+                </Typography>
+                <Typography id="modal-modal-description" sx={{mt: 2}}>
+                    continuing you agree to our user agreements and acknowledge that you understand our Privacy
+                    Policy
+                </Typography>
+                <Typography id="modal-modal-description" sx={{mt: 3}}>
+                    {userContext?.token ? (
+                        <div>
+                            error... error... error...
+                        </div>
 
-                                    {events ? (
-                                        <div>
-                                            <h2>Your Events</h2>
-                                            <ul>
-                                                {events.map((event: any, index: any) => (
-                                                    <li key={index}>{event.summary} - {new Date(event.start.dateTime).toLocaleString()}</li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    ) : null}
-
-                                </div>
-
-                            ) : (
-                                <Button
-                                    onClick={() => {
-                                        login();
-                                    }}
-                                >
-                                    Continue with Google </Button>
-                            )}                </Typography>
-                    </Box>
-                </Modal>
-            )}
-        </AuthContext.Consumer>
+                    ) : (
+                        <Button
+                            onClick={() => {
+                                login();
+                            }}
+                            variant="outlined"
+                        >
+                            Continue with Google </Button>
+                    )}                </Typography>
+            </Box>
+        </Modal>
     );
 }
 

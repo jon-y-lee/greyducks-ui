@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useContext, useEffect} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -12,33 +13,37 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import Drawer from '@mui/material/Drawer';
-import {CSSObject, Divider, List, ListItem, ListItemButton, ListItemText, styled, Theme, useTheme} from "@mui/material";
+import {Divider, List, ListItem, ListItemButton, styled, useTheme} from "@mui/material";
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LoginModal from "./LoginModal";
 import {AuthContext} from '../contexts/auth/AuthContext';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import RamenDiningIcon from '@mui/icons-material/RamenDining';
+import SettingsIcon from '@mui/icons-material/Settings';
+import {googleLogout} from "@react-oauth/google";
+import {LOCAL_STORE_KEYS} from "./Constants";
 
 const pages: any = [];
-// const pages = [{
-//     name: 'Calendar',
-//     path: '/Calendar'
-// }];
-
-const settings = ['Profile', 'Logout'];
 const navOptions = [
     {
         name: 'Calendar',
-        path: '/calendar'
+        path: '/calendar',
+        element: <CalendarMonthIcon/>
     },
     {
         name: 'Tasks',
-        path: '/tasks'
+        path: '/tasks',
+        element: <TaskAltIcon/>
+
     },
     {
         name: 'Recipes',
-        path: '/recipes'
+        path: '/recipes',
+        element: <RamenDiningIcon/>
     }
 ]
 
@@ -47,6 +52,17 @@ function ResponsiveAppBar() {
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
     const [open, setOpen] = React.useState(false);
     const [login, setLogin] = React.useState(false);
+    const [pictureSource, setPictureSource] = React.useState('');
+    const userContext = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        let pictureSource = userContext?.picture;
+        if (pictureSource == null || pictureSource == undefined) {
+            pictureSource = "";
+        }
+        setPictureSource(pictureSource)
+    }, [userContext]);
 
     const theme = useTheme();
 
@@ -86,6 +102,24 @@ function ResponsiveAppBar() {
         setLogin(false)
     }
 
+    const logOut = () => {
+        googleLogout();
+        handleCloseUserMenu()
+        userContext?.toggleAuth(null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null);
+        localStorage.removeItem(LOCAL_STORE_KEYS.USER_PRINCIPLE);
+
+        navigate("/")
+    };
+    const profile = () => {
+        handleCloseUserMenu()
+        navigate("/profile")
+    };
 
     return (
         <AuthContext.Consumer>
@@ -95,27 +129,28 @@ function ResponsiveAppBar() {
                         <AppBar position="static" style={{backgroundColor: "white"}} elevation={0}>
                             <Container maxWidth="xl">
                                 <Toolbar disableGutters>
-                                    {/*<AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />*/}
-                                    <IconButton
-                                        size="large"
-                                        edge="start"
-                                        color="inherit"
-                                        aria-label="menu"
-                                        sx={{
-                                            mr: 2,
-                                            color: 'grey',
-                                        }}
-                                        onClick={() => setOpen(!open)}
-                                    >
-                                        <MenuIcon/>
-                                    </IconButton>
-
+                                    {
+                                        userContext?.token ?
+                                            <IconButton
+                                                size="large"
+                                                edge="start"
+                                                color="inherit"
+                                                aria-label="menu"
+                                                sx={{
+                                                    mr: 2,
+                                                    color: 'grey',
+                                                }}
+                                                onClick={() => setOpen(!open)}
+                                            >
+                                                <MenuIcon/>
+                                            </IconButton>
+                                            : null}
                                     <Typography
                                         variant="h6"
                                         noWrap
                                         sx={{
                                             mr: 2,
-                                            // display: {xs: 'none', md: 'flex'},
+                                            display: {md: 'flex'},
                                             fontFamily: 'monospace',
                                             fontWeight: 700,
                                             letterSpacing: '.3rem',
@@ -125,7 +160,7 @@ function ResponsiveAppBar() {
                                         component={Link}
                                         to={"/"}
                                     >
-                                        GreyDuck
+                                        GrayDuck
                                     </Typography>
 
                                     <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
@@ -196,12 +231,16 @@ function ResponsiveAppBar() {
                                     </Box>
 
                                     <Box sx={{flexGrow: 0}}>
-                                        <Tooltip title="Open settings">
-                                            <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
-                                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg"/>
-                                            </IconButton>
-                                        </Tooltip>
-                                        <Button key={"login"} onClick={handleOpenLogin}>Login</Button>
+                                        {user?.token ?
+                                            <>
+                                                <Tooltip title="Open settings">
+                                                    <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
+                                                        <Avatar src={pictureSource}/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </> :
+                                            <Button key={"login"} onClick={handleOpenLogin}>Login</Button>
+                                        }
                                         <Menu
                                             sx={{mt: '45px'}}
                                             id="menu-appbar"
@@ -218,13 +257,11 @@ function ResponsiveAppBar() {
                                             open={Boolean(anchorElUser)}
                                             onClose={handleCloseUserMenu}
                                         >
-                                            {/*{settings.map((setting) => (*/}
-                                            {/*    <MenuItem key={setting} onClick={handleCloseUserMenu}>*/}
-                                            {/*        <Typography textAlign="center">{setting}</Typography>*/}
-                                            {/*    </MenuItem>*/}
-                                            {/*))}*/}
-                                            <MenuItem key={'login'} onClick={handleCloseUserMenu}>
-                                                <Typography textAlign="center">login</Typography>
+                                            <MenuItem key={'logout'} onClick={logOut}>
+                                                <Typography textAlign="center">logout</Typography>
+                                            </MenuItem>
+                                            <MenuItem key={'profile'} onClick={profile}>
+                                                <Typography textAlign="center">profile</Typography>
                                             </MenuItem>
 
                                         </Menu>
@@ -233,7 +270,10 @@ function ResponsiveAppBar() {
                             </Container>
                         </AppBar>
 
-                        <Drawer variant="persistent" open={open}>
+                        <Drawer
+                            variant="persistent"
+                            anchor="left"
+                            open={open}>
                             <DrawerHeader>
                                 <IconButton onClick={handleDrawerClose}>
                                     {theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
@@ -242,7 +282,7 @@ function ResponsiveAppBar() {
                             <Divider/>
                             <List>
                                 {navOptions.map((option, index) => (
-                                    <ListItem key={option.name} disablePadding sx={{display: 'block'}}>
+                                    <ListItem key={option.name} sx={{display: 'block'}}>
                                         <ListItemButton
                                             sx={{
                                                 minHeight: 48,
@@ -252,30 +292,30 @@ function ResponsiveAppBar() {
                                             component={Link}
                                             to={option.path}
                                         >
-                                            <ListItemText primary={option.name} sx={{opacity: open ? 1 : 0}}/>
+                                            {option.element}
                                         </ListItemButton>
                                     </ListItem>
                                 ))}
                             </List>
                             <Divider/>
                             <List>
-                                {['Settings'].map((text, index) => (
-                                    <ListItem key={text} disablePadding sx={{display: 'block'}}>
-                                        <ListItemButton
-                                            sx={{
-                                                minHeight: 48,
-                                                justifyContent: open ? 'initial' : 'center',
-                                                px: 2.5,
-                                            }}
-                                        >
-                                            <ListItemText primary={text} sx={{opacity: open ? 1 : 0}}/>
-                                        </ListItemButton>
-                                    </ListItem>
-                                ))}
+                                <ListItem key={'settings'} sx={{display: 'block'}}>
+                                    <ListItemButton
+                                        sx={{
+                                            minHeight: 48,
+                                            justifyContent: open ? 'initial' : 'center',
+                                            px: 2.5,
+                                        }}
+                                        component={Link}
+                                        to={'/settings'}
+
+                                    >
+                                        <SettingsIcon/>
+                                    </ListItemButton>
+                                </ListItem>
                             </List>
                         </Drawer>
                     </Box>
-                    name {user?.name}
                     <LoginModal open={login} handleClose={handleCloseLogin}/>
                 </>
             )}

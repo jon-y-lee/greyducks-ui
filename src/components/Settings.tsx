@@ -5,16 +5,16 @@ import {Button} from "@mui/material";
 import LoginModal from "./LoginModal";
 import {AuthContext} from "../contexts/auth/AuthContext";
 
-const Home = () => {
+const Settings = () => {
 
     const [token, setToken] = useState("");
     const userContext = useContext(AuthContext);
 
     return (
         <div>
-            Home
+            Settings
         </div>
     );
 };
 
-export default Home;
+export default Settings;
