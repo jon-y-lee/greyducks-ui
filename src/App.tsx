@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import './App.css';
 import {GoogleOAuthProvider} from '@react-oauth/google';
-import Calendar from './components/Calendar'; // We'll create this component next
+import Calendar from './components/calendar/Calendar'; // We'll create this component next
 import {createBrowserRouter, RouterProvider,} from "react-router-dom";
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';

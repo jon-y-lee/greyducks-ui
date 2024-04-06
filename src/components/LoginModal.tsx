@@ -29,7 +29,7 @@ const LoginModal = (loginModalInterface: LoginModalInterface) => {
 
     const [user, setUser]: any = useState([]);
     const [profile, setProfile]: any = useState([]);
-    const [events, setEvents]: any = useState([]);
+    // const [events, setEvents]: any = useState([]);
 
     const userContext = useContext(AuthContext);
 
@@ -49,6 +49,7 @@ const LoginModal = (loginModalInterface: LoginModalInterface) => {
     useEffect(
         () => {
             if (user) {
+                console.log("USER:" + JSON.stringify(user))
                 axios
                     .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
                         headers: {
@@ -57,6 +58,7 @@ const LoginModal = (loginModalInterface: LoginModalInterface) => {
                         }
                     })
                     .then((res) => {
+                        console.log("asdfasdfasdfsa" + JSON.stringify(res))
                         setProfile(res.data);
                         const userPrinciple = {
                             name: res.data?.name,
@@ -74,24 +76,11 @@ const LoginModal = (loginModalInterface: LoginModalInterface) => {
                             userPrinciple.given_name,
                             userPrinciple.family_name,
                             userPrinciple.picture);
+
                         localStorage.setItem(LOCAL_STORE_KEYS.USER_PRINCIPLE, JSON.stringify(userPrinciple));
 
                     })
                     .catch((err) => console.log(err));
-
-                axios
-                    .get(`https://www.googleapis.com/calendar/v3/calendars/primary/events`, {
-                        headers: {
-                            Authorization: `Bearer ${user.access_token}`,
-                            Accept: 'application/json'
-                        }
-                    })
-                    .then((res) => {
-                        console.log("Got calendar events " + JSON.stringify(res.data['items']))
-                        setEvents(res.data['items']);
-                    })
-                    .catch((err) => console.log(err));
-
             }
         },
         [user]
@@ -99,8 +88,6 @@ const LoginModal = (loginModalInterface: LoginModalInterface) => {
     return (
         <Modal
             open={open}
-            // close={}
-            // onBackdropClick={() => setOpen(false)
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
         >
