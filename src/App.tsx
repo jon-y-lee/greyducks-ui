@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import './App.css';
 import {GoogleOAuthProvider} from '@react-oauth/google';
-import Calendar from './components/calendar/Calendar'; // We'll create this component next
+import WeeklyCalendar from './components/calendar/WeeklyCalendar'; // We'll create this component next
 import {createBrowserRouter, RouterProvider,} from "react-router-dom";
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -14,7 +14,7 @@ import AuthChecker from "./components/AuthChecker";
 import Profile from "./components/Profile";
 import Tasks from "./components/Tasks";
 import Recipes from "./components/Recipes";
-import Settings from "./components/Settings";
+import Settings from "./components/settings/Settings";
 import {ThemeProvider, createTheme} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
@@ -60,7 +60,7 @@ function App() {
     const router = createBrowserRouter([
         {
             path: "calendar",
-            element: <><AuthChecker/><ResponsiveAppBar/><Calendar/></>,
+            element: <><AuthChecker/><ResponsiveAppBar/><WeeklyCalendar/></>,
         },
         {
             path: "/",
@@ -92,7 +92,8 @@ function App() {
                 <React.StrictMode>
                     <AuthContext.Provider value={currentAuthenticatedUser}>
                         <GoogleOAuthProvider
-                            clientId="312804416596-b9fg9pvslkk3vnmbtlngertcr6qqr653.apps.googleusercontent.com"
+                            // clientId="312804416596-b9fg9pvslkk3vnmbtlngertcr6qqr653.apps.googleusercontent.com"
+                            clientId={'877315751810-m2qboe99fehv6roceg5f42tcatngqqc1.apps.googleusercontent.com'}
                         >
                             <RouterProvider router={router}/>
                         </GoogleOAuthProvider>

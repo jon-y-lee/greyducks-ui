@@ -5,6 +5,7 @@ export interface Event {
     summary: string,
     recurrence: string,
     description: string
+    colorId: number
 }
 
 export interface EventDateTime {

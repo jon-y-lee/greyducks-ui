@@ -5,6 +5,8 @@ import {googleLogout, useGoogleLogin} from "@react-oauth/google";
 import axios from "axios";
 import {AuthContext} from '../contexts/auth/AuthContext';
 import {LOCAL_STORE_KEYS} from "./Constants";
+import {GoogleUserService} from "../services/GoogleUserService";
+import {isEmpty} from "radash";
 
 interface LoginModalInterface {
     open: boolean,
@@ -29,11 +31,18 @@ const LoginModal = (loginModalInterface: LoginModalInterface) => {
 
     const [user, setUser]: any = useState([]);
     const [profile, setProfile]: any = useState([]);
-    // const [events, setEvents]: any = useState([]);
 
     const userContext = useContext(AuthContext);
 
     const login = useGoogleLogin({
+        scope: [
+            "openid",
+            "https://www.googleapis.com/auth/userinfo.profile",
+            "https://www.googleapis.com/auth/userinfo.email",
+            "https://www.googleapis.com/auth/calendar",
+            "https://www.googleapis.com/auth/tasks",
+        ].join(" "),
+
         onSuccess: (codeResponse: any) => {
             console.log("Success:" + JSON.stringify(codeResponse))
             setUser(codeResponse)
@@ -48,39 +57,20 @@ const LoginModal = (loginModalInterface: LoginModalInterface) => {
 
     useEffect(
         () => {
-            if (user) {
-                console.log("USER:" + JSON.stringify(user))
-                axios
-                    .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
-                        headers: {
-                            Authorization: `Bearer ${user.access_token}`,
-                            Accept: 'application/json'
-                        }
-                    })
-                    .then((res) => {
-                        console.log("asdfasdfasdfsa" + JSON.stringify(res))
-                        setProfile(res.data);
-                        const userPrinciple = {
-                            name: res.data?.name,
-                            token: user?.access_token,
-                            email: res.data?.email,
-                            id: res.data?.email,
-                            given_name: res.data?.given_name,
-                            family_name: res.data?.family_name,
-                            picture: res.data?.picture,
-                        }
-                        userContext?.toggleAuth(res.data?.name,
-                            user.access_token,
-                            userPrinciple.email,
-                            userPrinciple.id,
-                            userPrinciple.given_name,
-                            userPrinciple.family_name,
-                            userPrinciple.picture);
+            if (!isEmpty(user)) {
+                console.log("LOG MODAL - USER:" + JSON.stringify(user))
+                GoogleUserService.userInfo(user.access_token).then(userPrinciple => {
+                    userContext?.toggleAuth(userPrinciple?.name,
+                        userPrinciple?.token,
+                        userPrinciple.email,
+                        userPrinciple.id,
+                        userPrinciple.given_name,
+                        userPrinciple.family_name,
+                        userPrinciple.picture);
 
-                        localStorage.setItem(LOCAL_STORE_KEYS.USER_PRINCIPLE, JSON.stringify(userPrinciple));
+                    localStorage.setItem(LOCAL_STORE_KEYS.USER_PRINCIPLE, JSON.stringify(userPrinciple));
 
-                    })
-                    .catch((err) => console.log(err));
+                }).catch((err) => console.log(err));
             }
         },
         [user]

@@ -4,10 +4,11 @@ import {Event} from "../contexts/event/Event";
 import {LOCAL_STORE_KEYS} from "../components/Constants";
 
 const GOOGLE_CALENDAR_EVENTS_URI = 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
+const GOOGLE_CALENDAR_COLORS_URI = 'https://www.googleapis.com/calendar/v3/colors'
 
 export const GoogleCalendarService = {
 
-    async getCalendarEvents(startDate: Date, endDate: Date) {
+    async getCalendarColors() {
 
         let userContext: UserAuthentication | null = null;
         const userPrincipleString = localStorage.getItem(LOCAL_STORE_KEYS.USER_PRINCIPLE);
@@ -15,10 +16,48 @@ export const GoogleCalendarService = {
             userContext = JSON.parse(userPrincipleString);
         }
 
+        const colorCodes = localStorage.getItem(LOCAL_STORE_KEYS.COLOR_CODES)
+
+        if (colorCodes){
+            return JSON.parse(colorCodes);
+        }
+
         if (userContext) {
             return axios
+                .get(GOOGLE_CALENDAR_COLORS_URI, {
+                    headers: {
+                        Authorization: `Bearer ${userContext.token}`,
+                        Accept: 'application/json'
+                    }
+                })
+                .catch(error => {
+                    if (error?.response?.status == 401) {
+                        localStorage.removeItem(LOCAL_STORE_KEYS.COLOR_CODES)
+                        throw error;
+                    }
+                })
+                .then((res) => {
+                    localStorage.setItem(LOCAL_STORE_KEYS.COLOR_CODES, JSON.stringify(res?.data?.calendar))
+                    return res?.data?.calendar
+                })
+        }
+        return null
+    },
+
+    async getCalendarEvents(startDate: String, endDate: String) {
+
+        let userContext: UserAuthentication | null = null;
+        const userPrincipleString = localStorage.getItem(LOCAL_STORE_KEYS.USER_PRINCIPLE);
+        if (userPrincipleString != null) {
+            userContext = JSON.parse(userPrincipleString);
+        }
+
+        console.log("USER:" + JSON.stringify(userContext?.token))
+        if (userContext) {
+
+            return axios
                 .get(GOOGLE_CALENDAR_EVENTS_URI + `?singleEvents=true&timeMin=` +
-                    startDate.toISOString() + '&timeMax=' + endDate.toISOString(), {
+                    startDate + '&timeMax=' + endDate, {
                     headers: {
                         Authorization: `Bearer ${userContext.token}`,
                         Accept: 'application/json'
@@ -52,5 +91,5 @@ export const GoogleCalendarService = {
 
         }
         return new Map()
-    }
+    },
 };

@@ -9,7 +9,6 @@ import {useNavigate} from "react-router-dom";
 
 const AuthChecker = () => {
 
-    const [token, setToken] = useState("");
     const userContext = useContext(AuthContext);
     const navigate = useNavigate();
 
