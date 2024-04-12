@@ -16,12 +16,6 @@ export const GoogleCalendarService = {
             userContext = JSON.parse(userPrincipleString);
         }
 
-        const colorCodes = localStorage.getItem(LOCAL_STORE_KEYS.COLOR_CODES)
-
-        if (colorCodes){
-            return JSON.parse(colorCodes);
-        }
-
         if (userContext) {
             return axios
                 .get(GOOGLE_CALENDAR_COLORS_URI, {
@@ -32,12 +26,10 @@ export const GoogleCalendarService = {
                 })
                 .catch(error => {
                     if (error?.response?.status == 401) {
-                        localStorage.removeItem(LOCAL_STORE_KEYS.COLOR_CODES)
                         throw error;
                     }
                 })
                 .then((res) => {
-                    localStorage.setItem(LOCAL_STORE_KEYS.COLOR_CODES, JSON.stringify(res?.data?.calendar))
                     return res?.data?.calendar
                 })
         }

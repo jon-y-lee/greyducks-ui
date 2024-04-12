@@ -2,10 +2,12 @@ import React, {useEffect, useState} from 'react';
 import {Card, CardActions, CardContent, CardHeader, Grid} from "@mui/material";
 import {Event} from "../../contexts/event/Event"
 import Typography from "@mui/material/Typography";
-import {getCurrentWeek} from "../../utils/DateUtils";
+import {getCurrentWeek, getSaturdayOfCurrentWeek, getSundayOfCurrentWeek} from "../../utils/DateUtils";
 import {GoogleCalendarService} from "../../services/GoogleCalendarService";
 import EditIcon from '@mui/icons-material/Edit';
 import {useNavigate} from "react-router-dom";
+import Box from "@mui/material/Box";
+import {isEmpty} from "radash";
 
 const WeeklyCalendar = () => {
 
@@ -15,23 +17,28 @@ const WeeklyCalendar = () => {
     const [currentWeek, setCurrentWeek] = useState<any>({});
 
     useEffect(() => {
-        const sunday = currentWeek['0']?.isoString;
-        const saturday = currentWeek['6']?.isoString;
+        // const sunday = currentWeek['0']?.isoString;
+        // const saturday = currentWeek['6']?.isoString;
+        const sunday = getSundayOfCurrentWeek();
+        const saturday = getSaturdayOfCurrentWeek();
 
-        GoogleCalendarService.getCalendarEvents(sunday, saturday).then((events) => {
+        if (isEmpty(sunday) || isEmpty(saturday)) return;
+        console.log("Sunday:" + sunday)
+        console.log("saturday:" + saturday)
+        GoogleCalendarService.getCalendarEvents(sunday.toISOString(), saturday.toISOString()).then((events) => {
             return setWeeklyEvents(events);
         }).catch(error => {
             console.log(error)
         })
 
-    }, [currentWeek])
+    }, [currentWeek, calendarColors])
 
     useEffect(() => {
 
         setCurrentWeek(getCurrentWeek());
 
         GoogleCalendarService.getCalendarColors().then(calendarColors => {
-            console.log(calendarColors)
+            console.log('cal colors:' + JSON.stringify(calendarColors))
             setCalendarColors(calendarColors);
         }).catch(error => {
             console.log(error);
@@ -70,11 +77,15 @@ const WeeklyCalendar = () => {
 
         let color = 'lightgray';
 
+
         if (event.colorId !== null && event.colorId !== undefined) {
+            console.log("ColorId:" + event.colorId)
             if (calendarColors) {
+                console.log("Calendar Colos:" + JSON.stringify(calendarColors))
                 color = calendarColors?.[event.colorId]?.background
             }
         }
+        console.log("Color:" + color);
         return (
             <Card sx={{width: '100%', marginBottom: '10px'}}>
                 <CardHeader
@@ -90,7 +101,7 @@ const WeeklyCalendar = () => {
                         {event.description}
                     </Typography>
                 </CardContent>
-                <CardActions     sx={{
+                <CardActions sx={{
                     alignSelf: "stretch",
                     display: "flex",
                     justifyContent: "flex-end",
@@ -98,7 +109,7 @@ const WeeklyCalendar = () => {
                     p: '8px',
                     pt: '0px',
                     pb: '4px'
-                }}disableSpacing>
+                }} disableSpacing>
                     <EditIcon fontSize={"small"} sx={{opacity: '30%'}}/>
                 </CardActions>
 
@@ -108,22 +119,30 @@ const WeeklyCalendar = () => {
 
     return (
         <div>
+            <Typography textAlign={"center"} variant={"h3"} pl={'5vw'}>{new Date().toLocaleString('en-us',
+                {
+                    month: 'long'
+                })}</Typography>
             <br/>
             <div>
-                <h2>My Schedule</h2>
-                <Grid container spacing={1} sx={{padding: '6px'}}>
+                <Grid container spacing={0} sx={{padding: '6px'}}>
                     {
                         Object.keys(currentWeek).map((dayId) => {
                             const dayInfo = currentWeek[dayId]
-                            return (<Grid item xs={12} sm={12} md={12 / 7}>
-                                    <Typography sx={{fontSize: 18}}>
-                                        {dayInfo?.day} {dayInfo?.formattedDate}
+                            return (<Grid item xs={12} sm={3} md={12 / 7} lg={12 / 7}>
+                                    <Typography sx={{display: "inline-block", textAlign: 'right', pr: '1vw', fontSize: 30}}>
+                                        {dayInfo?.day}
                                     </Typography>
+                                    <Typography sx={{display: "inline-block", textAlign: 'right', pr: '1vw', fontSize: 15}} >
+                                       {dayInfo?.date}
+                                    </Typography>
+                                    <Box sx={{p: '0.2vw', height: '100vh', overflow: 'scroll'}}>
                                     {
                                         extractWeeklyEvents(dayInfo?.id)?.map((event: Event) => {
                                             return formatEventCard(event);
                                         })
                                     }
+                                    </Box>
                                 </Grid>
                             )
 
