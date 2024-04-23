@@ -18,7 +18,6 @@ const AuthChecker = () => {
         if (userPrincipleString != null) {
             const userPrinciple: UserAuthentication = JSON.parse(userPrincipleString);
 
-            console.log("UserPrinciple:" + JSON.stringify(userPrinciple));
             userContext?.toggleAuth(userPrinciple?.name,
                 userPrinciple?.token,
                 userPrinciple.email,

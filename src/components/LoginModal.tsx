@@ -1,11 +1,10 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Box, Button, Modal} from "@mui/material";
+import {Backdrop, Box, Button, CircularProgress, Modal} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {googleLogout, useGoogleLogin} from "@react-oauth/google";
-import axios from "axios";
 import {AuthContext} from '../contexts/auth/AuthContext';
 import {LOCAL_STORE_KEYS} from "./Constants";
-import {GoogleUserService} from "../services/GoogleUserService";
+import {UserService} from "../services/UserService";
 import {isEmpty} from "radash";
 
 interface LoginModalInterface {
@@ -31,6 +30,7 @@ const LoginModal = (loginModalInterface: LoginModalInterface) => {
 
     const [user, setUser]: any = useState([]);
     const [profile, setProfile]: any = useState([]);
+    const [backdropOpen, setBackdropOpen]: any = useState(false);
 
     const userContext = useContext(AuthContext);
 
@@ -47,8 +47,14 @@ const LoginModal = (loginModalInterface: LoginModalInterface) => {
             console.log("Success:" + JSON.stringify(codeResponse))
             setUser(codeResponse)
             handleClose()
+            setBackdropOpen(false)
         },
-        onError: (error) => console.log('Login Failed:', error)
+        onError: (error) => {
+            console.log('Login Failed:', error)
+            setBackdropOpen(false)
+        },
+
+
     });
     const logOut = () => {
         googleLogout();
@@ -59,7 +65,7 @@ const LoginModal = (loginModalInterface: LoginModalInterface) => {
         () => {
             if (!isEmpty(user)) {
                 console.log("LOG MODAL - USER:" + JSON.stringify(user))
-                GoogleUserService.userInfo(user.access_token).then(userPrinciple => {
+                UserService.userInfo(user.access_token).then(userPrinciple => {
                     userContext?.toggleAuth(userPrinciple?.name,
                         userPrinciple?.token,
                         userPrinciple.email,
@@ -98,12 +104,21 @@ const LoginModal = (loginModalInterface: LoginModalInterface) => {
                     ) : (
                         <Button
                             onClick={() => {
+                                setBackdropOpen(true)
                                 login();
                             }}
                             variant="outlined"
                         >
                             Continue with Google </Button>
                     )}                </Typography>
+                <Backdrop
+                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    open={backdropOpen}
+                    onClick={() => setBackdropOpen(false)}
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop>
+
             </Box>
         </Modal>
     );

@@ -3,8 +3,13 @@ import {AuthContext} from '../../contexts/auth/AuthContext';
 import {GoogleTasksService} from "../../services/GoogleTasksService";
 import {isEmpty} from "radash";
 import {LAUNCH_PROCEDURES_METADATA_TASK_NAME} from "../Constants";
+import {UserSetting} from "../../services/UserService";
 
-const ProfileManagement = () => {
+interface ProfileManagementPros {
+    settings: UserSetting | undefined
+}
+
+const ProfileManagement: React.FC<ProfileManagementPros> = ({settings}) => {
 
     const [token, setToken] = useState("");
     const userContext = useContext(AuthContext);
@@ -24,11 +29,12 @@ const ProfileManagement = () => {
         if (isEmpty(metadataTaskList)) {
             GoogleTasksService.createTaskList(token, LAUNCH_PROCEDURES_METADATA_TASK_NAME).then(res => console.log("Created new defautl task list: " + JSON.stringify(res)))
         }
-
     }, [])
     return (
         <div>
-
+            asdfasdfasd <br/>{settings?.profiles.map(profile => {
+                return <>{profile.name} ---- color ---- {profile.color}<br/></>
+        })}
         </div>
     );
 };

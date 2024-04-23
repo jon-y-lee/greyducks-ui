@@ -1,18 +1,31 @@
 import axios from "axios";
 
-const GOOGLE_USER_INFO_URI = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token='
-export const GoogleUserService = {
+const API_URL = 'http://localhost:8081/'
+
+export interface UserSetting {
+    id: string,
+    name: string,
+    email: string,
+    profiles: Profile[]
+}
+
+export interface Profile {
+    name: string,
+    color: string
+}
+
+export const UserService = {
 
     async userInfo(access_token: string) {
-        console.log("Requestiong user info:" + access_token)
         return axios
-            .get(GOOGLE_USER_INFO_URI + access_token, {
+            .get(API_URL + "profile", {
                 headers: {
                     Authorization: `Bearer ` + access_token,
                     Accept: 'application/json'
                 }
             })
             .then((res) => {
+                console.log("User found")
                 const userPrinciple = {
                     name: res.data?.name,
                     token: access_token,
@@ -25,4 +38,18 @@ export const GoogleUserService = {
                 return userPrinciple;
             })
     },
+
+    async userSettings(access_token: string) {
+        return axios
+            .get(API_URL + "settings", {
+                headers: {
+                    Authorization: `Bearer ` + access_token,
+                    Accept: 'application/json'
+                }
+            })
+            .then((res) => {
+                return res.data as UserSetting
+            })
+    },
+
 };

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Card, CardActions, CardContent, CardHeader, Grid} from "@mui/material";
+import {Backdrop, Card, CardActions, CardContent, CardHeader, CircularProgress, Grid} from "@mui/material";
 import {Event} from "../../contexts/event/Event"
 import Typography from "@mui/material/Typography";
 import {getCurrentWeek, getSaturdayOfCurrentWeek, getSundayOfCurrentWeek} from "../../utils/DateUtils";
@@ -8,6 +8,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import {useNavigate} from "react-router-dom";
 import Box from "@mui/material/Box";
 import {isEmpty} from "radash";
+import LoadingBackDrop from "../backdrops/LoadingBackDrop";
 
 const WeeklyCalendar = () => {
 
@@ -15,6 +16,7 @@ const WeeklyCalendar = () => {
     const [calendarColors, setCalendarColors] = useState<any>({});
     const navigate = useNavigate();
     const [currentWeek, setCurrentWeek] = useState<any>({});
+    const [backdropOpen, setBackdropOpen]: any = useState(false);
 
     useEffect(() => {
         // const sunday = currentWeek['0']?.isoString;
@@ -25,10 +27,13 @@ const WeeklyCalendar = () => {
         if (isEmpty(sunday) || isEmpty(saturday)) return;
         console.log("Sunday:" + sunday)
         console.log("saturday:" + saturday)
+        setBackdropOpen(true)
         GoogleCalendarService.getCalendarEvents(sunday.toISOString(), saturday.toISOString()).then((events) => {
             return setWeeklyEvents(events);
         }).catch(error => {
             console.log(error)
+        }).finally(() => {
+            setBackdropOpen(false)
         })
 
     }, [currentWeek, calendarColors])
@@ -150,6 +155,8 @@ const WeeklyCalendar = () => {
                     }
                 </Grid>
             </div>
+            <LoadingBackDrop
+                isOpen={backdropOpen}/>
         </div>
     );
 };

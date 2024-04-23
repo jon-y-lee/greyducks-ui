@@ -13,7 +13,10 @@ const Tasks = () => {
 
     useEffect(() => {
         const token = userContext?.token ? userContext.token : "";
+        console.log("TASK TASK TASK UF")
+
         GoogleTasksService.listTasks(token).then(data => {
+            console.log("TASK TASK TASK")
             console.log(data)
         })
         }, [])

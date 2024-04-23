@@ -5,6 +5,7 @@ import {LOCAL_STORE_KEYS} from "../components/Constants";
 
 const GOOGLE_CALENDAR_EVENTS_URI = 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
 const GOOGLE_CALENDAR_COLORS_URI = 'https://www.googleapis.com/calendar/v3/colors'
+const API_URL = 'http://localhost:8081/events'
 
 export const GoogleCalendarService = {
 
@@ -44,12 +45,10 @@ export const GoogleCalendarService = {
             userContext = JSON.parse(userPrincipleString);
         }
 
-        console.log("USER:" + JSON.stringify(userContext?.token))
         if (userContext) {
-
             return axios
-                .get(GOOGLE_CALENDAR_EVENTS_URI + `?singleEvents=true&timeMin=` +
-                    startDate + '&timeMax=' + endDate, {
+                .get(API_URL + `?startTime=` +
+                    startDate + '&endTime=' + endDate, {
                     headers: {
                         Authorization: `Bearer ${userContext.token}`,
                         Accept: 'application/json'

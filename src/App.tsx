@@ -15,8 +15,9 @@ import Profile from "./components/Profile";
 import Tasks from "./components/Tasks";
 import Recipes from "./components/Recipes";
 import Settings from "./components/settings/Settings";
-import {ThemeProvider, createTheme} from '@mui/material/styles';
+import {ThemeProvider, createTheme, createMuiTheme} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import {Backdrop, CircularProgress} from "@mui/material";
 
 function App() {
 
@@ -42,10 +43,12 @@ function App() {
         palette: {
             mode: 'light',
         },
+        typography: {
+            fontFamily: "'Quicksand', sans-serif"
+        }
     });
 
-
-    const [currentAuthenticatedUser, setCurrentAuthenticatedUser]
+const [currentAuthenticatedUser, setCurrentAuthenticatedUser]
         = useState<UserAuthentication>({
         name: null,
         token: null,
@@ -92,7 +95,6 @@ function App() {
                 <React.StrictMode>
                     <AuthContext.Provider value={currentAuthenticatedUser}>
                         <GoogleOAuthProvider
-                            // clientId="312804416596-b9fg9pvslkk3vnmbtlngertcr6qqr653.apps.googleusercontent.com"
                             clientId={'877315751810-m2qboe99fehv6roceg5f42tcatngqqc1.apps.googleusercontent.com'}
                         >
                             <RouterProvider router={router}/>
