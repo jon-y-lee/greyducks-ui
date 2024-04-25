@@ -52,6 +52,7 @@ function ResponsiveAppBar() {
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
     const [open, setOpen] = React.useState(false);
     const [login, setLogin] = React.useState(false);
+    const [date, setDate] = React.useState(new Date());
     const [pictureSource, setPictureSource] = React.useState('');
     const userContext = useContext(AuthContext);
     const navigate = useNavigate();
@@ -63,6 +64,10 @@ function ResponsiveAppBar() {
         }
         setPictureSource(pictureSource)
     }, [userContext]);
+
+    setTimeout(() => {
+        setDate(new Date())
+    }, 10000)
 
     const theme = useTheme();
 
@@ -228,6 +233,25 @@ function ResponsiveAppBar() {
                                             </Button>
                                         ))}
                                     </Box>
+                                    <Typography
+                                        variant="h6"
+                                        noWrap
+                                        sx={{
+                                            letterSpacing: '.1rem',
+                                            textAlign: 'right',
+                                            color: 'black',
+                                            mr: '10px'
+                                        }}
+                                    >
+                                        {
+                                            date.toLocaleDateString(undefined, {
+                                                month: 'long',
+                                                day: 'numeric',
+                                                hour: 'numeric',
+                                                minute: 'numeric'
+
+                                            })}
+                                    </Typography>
 
                                     <Box sx={{flexGrow: 0}}>
                                         {user?.token ?
@@ -240,6 +264,7 @@ function ResponsiveAppBar() {
                                             </> :
                                             <Button key={"login"} onClick={handleOpenLogin}>Login</Button>
                                         }
+
                                         <Menu
                                             sx={{mt: '45px'}}
                                             id="menu-appbar"
@@ -268,11 +293,15 @@ function ResponsiveAppBar() {
                                 </Toolbar>
                             </Container>
                         </AppBar>
-
                         <Drawer
-                            variant="persistent"
+                            variant="temporary"
                             anchor="left"
-                            open={open}>
+                            open={open}
+                            onClose={handleDrawerClose}
+
+                        >
+                            {/*ModalProps={{ onBackdropClick: handleDrawerClose() }}*/}
+
                             <DrawerHeader>
                                 <IconButton onClick={handleDrawerClose}>
                                     {theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
@@ -290,6 +319,7 @@ function ResponsiveAppBar() {
                                             }}
                                             component={Link}
                                             to={option.path}
+                                            onClick={handleDrawerClose}
                                         >
                                             {option.element}
                                         </ListItemButton>
@@ -307,7 +337,7 @@ function ResponsiveAppBar() {
                                         }}
                                         component={Link}
                                         to={'/settings'}
-
+                                        onClick={handleDrawerClose}
                                     >
                                         <SettingsIcon/>
                                     </ListItemButton>

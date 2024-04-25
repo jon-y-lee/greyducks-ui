@@ -1,4 +1,6 @@
 import axios from "axios";
+import {UserAuthentication} from "../contexts/auth/AuthContext";
+import {LOCAL_STORE_KEYS} from "../components/Constants";
 
 const API_URL = 'http://localhost:8081/'
 
@@ -10,6 +12,7 @@ export interface UserSetting {
 }
 
 export interface Profile {
+    id: string,
     name: string,
     color: string
 }
@@ -40,6 +43,9 @@ export const UserService = {
     },
 
     async userSettings(access_token: string) {
+        if (access_token == undefined) {
+            console.log("SER SETTINGS!!!! UNDEFINED:" + access_token)
+        }
         return axios
             .get(API_URL + "settings", {
                 headers: {
@@ -52,4 +58,30 @@ export const UserService = {
             })
     },
 
+    async saveUserProfile(profile: Profile) {
+        return axios
+            .put(API_URL + "settings/profiles", JSON.stringify(profile),{
+                headers: {
+                    Accept: 'application/json',
+                    "Content-Type": 'application/json'
+                },
+            })
+            .then((res) => {
+                return res.data as UserSetting
+            })
+    },
+
+    deleteUserProfile(profile: Profile) {
+        return axios
+            .delete(API_URL + "settings/profiles/" + profile.id,{
+                headers: {
+                    Accept: 'application/json',
+                    "Content-Type": 'application/json'
+                },
+            })
+            .then((res) => {
+                return res.data as UserSetting
+            })
+
+    }
 };

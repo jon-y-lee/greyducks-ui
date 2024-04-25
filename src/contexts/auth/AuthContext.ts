@@ -1,4 +1,5 @@
 import React from "react";
+import {LOCAL_STORE_KEYS} from "../../components/Constants";
 
 export interface UserAuthentication {
     name: string | null,
@@ -22,3 +23,11 @@ export const AuthContext = React.createContext<UserAuthentication | null>({
     toggleAuth: () => {
     }
 });
+
+export const getUserContextFromLocalStore = () => {
+    const userPrincipleString = localStorage.getItem(LOCAL_STORE_KEYS.USER_PRINCIPLE);
+    if (userPrincipleString != null) {
+        return JSON.parse(userPrincipleString);
+    }
+    return null;
+}

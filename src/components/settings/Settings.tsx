@@ -6,7 +6,7 @@ import {Divider, Grid, ListItemIcon, ListItemText} from "@mui/material";
 import GroupIcon from '@mui/icons-material/Group';
 import ProfileManagement from "./ProfileManagement";
 import {UserService, UserSetting} from "../../services/UserService";
-import {AuthContext} from "../../contexts/auth/AuthContext";
+import {AuthContext, getUserContextFromLocalStore} from "../../contexts/auth/AuthContext";
 
 const Settings = () => {
 
@@ -23,7 +23,7 @@ const Settings = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const token = userContext?.token ? userContext.token : "";
+            const token = userContext?.token ? userContext.token : getUserContextFromLocalStore().token;
             const data = await UserService.userSettings(token);
             return data
         }
@@ -79,7 +79,11 @@ const Settings = () => {
             </Grid>
             <Grid item xs={6} md={6}>
                 <Box sx={{mt: '5%', mr: '10%'}}>
-                    {selectedIndex == 0 ? <ProfileManagement settings={userSettings}/> : null}
+                    {selectedIndex == 0 ? <ProfileManagement settings={userSettings}
+                    updateSettings={(userSettings: UserSetting) => {
+                        console.log("Settings updated")
+                        setUserSettings(userSettings)
+                    }}/> : null}
                 </Box>
             </Grid>
         </Grid>

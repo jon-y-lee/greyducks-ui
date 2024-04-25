@@ -31,7 +31,18 @@ export const GoogleCalendarService = {
                     }
                 })
                 .then((res) => {
-                    return res?.data?.calendar
+
+                    let colorMap = [];
+
+                    for (const key in res?.data?.calendar) {
+                        // Get the strongly typed value with this name:
+                        const value = res?.data?.calendar[key];
+                        colorMap.push(value)
+                    }
+
+                    console.log("ColorMap:" + JSON.stringify(colorMap))
+
+                    return colorMap;
                 })
         }
         return null

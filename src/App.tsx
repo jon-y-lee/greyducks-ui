@@ -9,17 +9,26 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import Home from "./components/Home";
 import ResponsiveAppBar from "./components/ResponsiveAppBar";
-import {AuthContext, UserAuthentication} from './contexts/auth/AuthContext';
+import {AuthContext, getUserContextFromLocalStore, UserAuthentication} from './contexts/auth/AuthContext';
 import AuthChecker from "./components/AuthChecker";
 import Profile from "./components/Profile";
-import Tasks from "./components/Tasks";
+import Tasks from "./components/tasks/Tasks";
 import Recipes from "./components/Recipes";
 import Settings from "./components/settings/Settings";
 import {ThemeProvider, createTheme, createMuiTheme} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import {Backdrop, CircularProgress} from "@mui/material";
+import axios from "axios";
+import {LOCAL_STORE_KEYS} from "./components/Constants";
+import LoginModal from "./components/LoginModal";
 
 function App() {
+
+    const [login, setLogin] = useState(false);
+
+    const handleCloseLogin = () => {
+        setLogin(false);
+    }
 
     const toggleAuth = (
         name: string,
@@ -48,7 +57,7 @@ function App() {
         }
     });
 
-const [currentAuthenticatedUser, setCurrentAuthenticatedUser]
+    const [currentAuthenticatedUser, setCurrentAuthenticatedUser]
         = useState<UserAuthentication>({
         name: null,
         token: null,
@@ -85,8 +94,29 @@ const [currentAuthenticatedUser, setCurrentAuthenticatedUser]
             path: "/settings",
             element: <><AuthChecker/><ResponsiveAppBar/><Settings/></>,
         },
-
     ]);
+
+    axios.interceptors.response.use(response => {
+        console.log("Response Interceptor")
+        return response;
+    }, error => {
+        if (error?.response?.status === 401) {
+            console.log("ERROR 401!!!")
+            localStorage.removeItem(LOCAL_STORE_KEYS.USER_PRINCIPLE)
+            setLogin(true);
+            // const url = new URL("/");
+            // history.pushState({}, "", url)
+            //place your reentry code
+        }
+        return error;
+    });
+
+    axios.interceptors.request.use(request => {
+        const token = getUserContextFromLocalStore().token
+        console.log("Request Interceptor")
+        request.headers.setAuthorization('Bearer ' + token)
+        return request;
+    })
 
     return (
         <div className={"App"}>
@@ -98,6 +128,7 @@ const [currentAuthenticatedUser, setCurrentAuthenticatedUser]
                             clientId={'877315751810-m2qboe99fehv6roceg5f42tcatngqqc1.apps.googleusercontent.com'}
                         >
                             <RouterProvider router={router}/>
+                            <LoginModal open={login} handleClose={handleCloseLogin}/>
                         </GoogleOAuthProvider>
                     </AuthContext.Provider>
                 </React.StrictMode>

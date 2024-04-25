@@ -1,40 +1,85 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {AuthContext} from '../../contexts/auth/AuthContext';
-import {GoogleTasksService} from "../../services/GoogleTasksService";
-import {isEmpty} from "radash";
-import {LAUNCH_PROCEDURES_METADATA_TASK_NAME} from "../Constants";
-import {UserSetting} from "../../services/UserService";
+import {AuthContext, getUserContextFromLocalStore} from '../../contexts/auth/AuthContext';
+import {Profile, UserSetting} from "../../services/UserService";
+import {Button, Card, CardHeader, Grid} from "@mui/material";
+import Typography from "@mui/material/Typography";
+import AddIcon from '@mui/icons-material/Add'
+import ProfileManagementEditModal from "./ProfileManagementEditModal";
+import {GoogleCalendarService} from "../../services/GoogleCalendarService";
+import Avatar from "@mui/material/Avatar";
+import IconButton from "@mui/material/IconButton";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 interface ProfileManagementPros {
     settings: UserSetting | undefined
+    updateSettings: Function
 }
 
-const ProfileManagement: React.FC<ProfileManagementPros> = ({settings}) => {
+const ProfileManagement: React.FC<ProfileManagementPros> = ({settings, updateSettings}) => {
 
-    const [token, setToken] = useState("");
+    const [openEditProfileModal, setOpenEditProfileModal] = useState(false);
     const userContext = useContext(AuthContext);
+    const [calendarColors, setCalendarColors] = useState<any>(null);
+    const [profile, setProfile] = useState<Profile>({} as Profile);
 
     useEffect(() => {
-        const token = userContext?.token ? userContext.token : "";
+        const token = userContext?.token ? userContext.token : getUserContextFromLocalStore().token;
 
-        const fetchData = async () => {
-            const data = await GoogleTasksService.getMetadataTask(token);
-            return data
-        }
+        GoogleCalendarService.getCalendarColors().then(calendarColors => {
+            console.log('cal colors:' + JSON.stringify(calendarColors))
 
-        const metadataTaskList = fetchData();
-
-        console.log("Metadata Task list:" + JSON.stringify(metadataTaskList))
-
-        if (isEmpty(metadataTaskList)) {
-            GoogleTasksService.createTaskList(token, LAUNCH_PROCEDURES_METADATA_TASK_NAME).then(res => console.log("Created new defautl task list: " + JSON.stringify(res)))
-        }
+            setCalendarColors(calendarColors);
+        }).catch(error => {
+            console.log(error);
+        })
     }, [])
     return (
         <div>
-            asdfasdfasd <br/>{settings?.profiles.map(profile => {
-                return <>{profile.name} ---- color ---- {profile.color}<br/></>
-        })}
+            <Grid container spacing={0} sx={{padding: '6px'}}>
+                <Grid item xs={12} sm={11} md={11} lg={11}/>
+                <Grid item xs={12} sm={1} md={1} lg={1}>
+                    <Typography variant="h5" color="text.primary" style={{display: 'inline-block'}}>
+                        <Button onClick={() => setOpenEditProfileModal(true)}><AddIcon/></Button>
+                    </Typography>
+                </Grid>
+
+            </Grid>
+            {settings?.profiles.map((profile: Profile) => {
+                return <>
+
+                    <Card sx={{maxWidth: 345}}>
+                        <CardHeader
+                            avatar={
+                                <Avatar sx={{bgcolor: profile.color}}>
+                                    {/*{profile.name}*/}
+                                </Avatar>
+                            }
+                            action={
+                                <IconButton aria-label="settings" onClick={() => {
+                                    console.log("setting profile:" + JSON.stringify(profile))
+                                    setProfile(profile)
+                                    setOpenEditProfileModal(true);
+                                }
+                                }>
+                                    <MoreVertIcon/>
+                                </IconButton>
+                            }
+                            title={profile.name}
+                        />
+                    </Card>
+                </>
+            })}
+            <ProfileManagementEditModal open={openEditProfileModal}
+                                        handleClose={(userSetting: UserSetting) => {
+                                            setOpenEditProfileModal(false)
+                                            setProfile({} as Profile)
+                                            if (userSetting != undefined) {
+                                                updateSettings(userSetting)
+                                            }
+                                        }}
+                                        colors={calendarColors}
+                                        initProfile={profile}
+            />
         </div>
     );
 };
