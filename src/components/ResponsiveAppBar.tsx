@@ -15,7 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import {Link, useNavigate} from "react-router-dom";
 import Drawer from '@mui/material/Drawer';
-import {Divider, List, ListItem, ListItemButton, styled, useTheme} from "@mui/material";
+import {Divider, List, ListItem, ListItemButton, makeStyles, styled, useTheme} from "@mui/material";
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LoginModal from "./LoginModal";
@@ -127,6 +127,7 @@ function ResponsiveAppBar() {
     };
 
     return (
+
         <AuthContext.Consumer>
             {user => (
                 <>
@@ -262,7 +263,20 @@ function ResponsiveAppBar() {
                                                     </IconButton>
                                                 </Tooltip>
                                             </> :
-                                            <Button key={"login"} onClick={handleOpenLogin}>Login</Button>
+                                            // background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
+                                            <Button
+                                                sx={{
+                                                    // outlineColor: 'linear-gradient(to right bottom, #36EAEF, #6B0AC9)',
+                                                    // outlineColor: 'red',
+                                                    // px: 2,
+                                                    // color: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 25%, rgba(209,0,255,1) 81%)',
+                                                    // backgroundColor: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 25%, rgba(209,0,255,1) 81%)',
+                                                    // backgroundColor: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 25%, rgba(209,0,255,1) 81%)'
+                                                    // background: 'linear-gradient(to right bottom, #36EAEF, #6B0AC9)',
+                                                }}
+                                                key={"login"} onClick={handleOpenLogin} variant={'outlined'}
+className={'loginbutton'}
+                                            >Login</Button>
                                         }
 
                                         <Menu

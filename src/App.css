@@ -38,3 +38,11 @@
     transform: rotate(360deg);
   }
 }
+
+.loginbutton {
+  /*background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 25%, rgba(209,0,255,1) 81%);*/
+  /*outline: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 25%, rgba(209,0,255,1) 81%);*/
+  /*color: white;*/
+  /*padding: 4px;*/
+
+}

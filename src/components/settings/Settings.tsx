@@ -24,7 +24,7 @@ const Settings = () => {
     useEffect(() => {
         const fetchData = async () => {
             const token = userContext?.token ? userContext.token : getUserContextFromLocalStore().token;
-            const data = await UserService.userSettings(token);
+            const data = await UserService.userSettings();
             return data
         }
 

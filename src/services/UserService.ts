@@ -42,14 +42,14 @@ export const UserService = {
             })
     },
 
-    async userSettings(access_token: string) {
-        if (access_token == undefined) {
-            console.log("SER SETTINGS!!!! UNDEFINED:" + access_token)
-        }
+    async userSettings() {
+        // if (access_token == undefined) {
+        //     console.log("SER SETTINGS!!!! UNDEFINED:" + access_token)
+        // }
         return axios
             .get(API_URL + "settings", {
                 headers: {
-                    Authorization: `Bearer ` + access_token,
+                    // Authorization: `Bearer ` + access_token,
                     Accept: 'application/json'
                 }
             })

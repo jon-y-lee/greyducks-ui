@@ -13,7 +13,7 @@ import {AuthContext, getUserContextFromLocalStore, UserAuthentication} from './c
 import AuthChecker from "./components/AuthChecker";
 import Profile from "./components/Profile";
 import Tasks from "./components/tasks/Tasks";
-import Recipes from "./components/Recipes";
+import Recipes from "./components/recipes/Recipes";
 import Settings from "./components/settings/Settings";
 import {ThemeProvider, createTheme, createMuiTheme} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
