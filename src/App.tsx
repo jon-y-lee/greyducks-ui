@@ -115,6 +115,7 @@ function App() {
         const userContext = getUserContextFromLocalStore()
         if (userContext != undefined) {
             request.headers.setAuthorization('Bearer ' + userContext.token)
+            request.headers.setAccept('application/json')
         }
         return request;
     })

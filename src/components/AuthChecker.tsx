@@ -1,8 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
-import axios from 'axios';
-import {googleLogout, useGoogleLogin} from "@react-oauth/google";
-import {Button} from "@mui/material";
-import LoginModal from "./LoginModal";
+import React, {useContext, useEffect} from 'react';
 import {AuthContext, UserAuthentication} from "../contexts/auth/AuthContext";
 import {LOCAL_STORE_KEYS} from "./Constants";
 import {useNavigate} from "react-router-dom";
@@ -15,7 +11,6 @@ const AuthChecker = () => {
     useEffect(() => {
         const userPrincipleString = localStorage.getItem(LOCAL_STORE_KEYS.USER_PRINCIPLE);
 
-        console.log("Auth Checker: User Principal String auth checker:" + JSON.stringify(userPrincipleString))
         if (userPrincipleString != null && userPrincipleString != "{}") {
             const userPrinciple: UserAuthentication = JSON.parse(userPrincipleString);
             console.log("  Auth Checker: Found a user")

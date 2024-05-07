@@ -23,23 +23,7 @@ const WeeklyCalendar = () => {
     const [openEventModal, setOpenEventModal] = useState(false)
 
     useEffect(() => {
-        // const sunday = currentWeek['0']?.isoString;
-        // const saturday = currentWeek['6']?.isoString;
-        const sunday = getSundayOfCurrentWeek();
-        const saturday = getSaturdayOfCurrentWeek();
-
-        if (isEmpty(sunday) || isEmpty(saturday)) return;
-        console.log("Sunday:" + sunday)
-        console.log("saturday:" + saturday)
-        setBackdropOpen(true)
-        GoogleCalendarService.getCalendarEvents(sunday.toISOString(), saturday.toISOString()).then((events) => {
-            return setWeeklyEvents(events);
-        }).catch(error => {
-            console.log(error)
-        }).finally(() => {
-            setBackdropOpen(false)
-        })
-
+        refreshEvents()
     }, [currentWeek, calendarColors])
 
     useEffect(() => {
@@ -53,6 +37,20 @@ const WeeklyCalendar = () => {
         })
     }, [])
 
+    const refreshEvents = () => {
+        const sunday = getSundayOfCurrentWeek();
+        const saturday = getSaturdayOfCurrentWeek();
+
+        if (isEmpty(sunday) || isEmpty(saturday)) return;
+        setBackdropOpen(true)
+        GoogleCalendarService.getCalendarEvents(sunday.toISOString(), saturday.toISOString()).then((events) => {
+            return setWeeklyEvents(events);
+        }).catch(error => {
+            console.log(error)
+        }).finally(() => {
+            setBackdropOpen(false)
+        })
+    }
     const extractWeeklyEvents = (day: number) => {
         return weeklyEvents.has(day) ? weeklyEvents.get(day) : [];
     }
@@ -60,23 +58,24 @@ const WeeklyCalendar = () => {
     const extractEndTime = (event: Event) => {
         const endDate = new Date(event.end.dateTime);
 
-        const endHours = endDate.getHours() % 12;
+        const endHours = (endDate.getHours() % 13 == 0) ? 1 : endDate.getHours() % 13;
         const endHoursAMPM = endDate.getHours() >= 12 ? 'PM' : 'AM';
 
         return (<>
-                {endHours}:{endDate.getMinutes()} {endHoursAMPM}
+                {endHours}:{endDate.getMinutes().toString().padStart(2, '0')} {endHoursAMPM}
             </>
         )
     }
     const extractStartTime = (event: Event) => {
         const startDate = new Date(event.start.dateTime);
+        const startHours = (startDate.getHours() % 13 == 0) ? 1 : startDate.getHours() % 13;
 
-        const startHours = startDate.getHours() % 12;
+        // const startHours = startDate.getHours() % 13;
         const startHoursAMPM = startDate.getHours() >= 12 ? 'PM' : 'AM';
 
         return (
             <>
-                {startHours}:{startDate.getMinutes()} {startHoursAMPM}
+                {startHours}:{startDate.getMinutes().toString().padStart(2, '0')} {startHoursAMPM}
             </>
         )
     }
@@ -132,18 +131,20 @@ const WeeklyCalendar = () => {
                         Object.keys(currentWeek).map((dayId) => {
                             const dayInfo = currentWeek[dayId]
                             return (<Grid item xs={12} sm={3} md={12 / 7} lg={12 / 7}>
-                                    <Typography sx={{display: "inline-block", textAlign: 'right', pr: '1vw', fontSize: 30}}>
+                                    <Typography
+                                        sx={{display: "inline-block", textAlign: 'right', pr: '1vw', fontSize: 30}}>
                                         {dayInfo?.day}
                                     </Typography>
-                                    <Typography sx={{display: "inline-block", textAlign: 'right', pr: '1vw', fontSize: 15}} >
-                                       {dayInfo?.date}
+                                    <Typography
+                                        sx={{display: "inline-block", textAlign: 'right', pr: '1vw', fontSize: 15}}>
+                                        {dayInfo?.date}
                                     </Typography>
                                     <Box sx={{p: '0.2vw', height: '100vh', overflow: 'scroll'}}>
-                                    {
-                                        extractWeeklyEvents(dayInfo?.id)?.map((event: Event) => {
-                                            return formatEventCard(event);
-                                        })
-                                    }
+                                        {
+                                            extractWeeklyEvents(dayInfo?.id)?.map((event: Event) => {
+                                                return formatEventCard(event);
+                                            })
+                                        }
                                     </Box>
                                 </Grid>
                             )
@@ -156,11 +157,12 @@ const WeeklyCalendar = () => {
                 isOpen={backdropOpen}/>
             <EventModal open={openEventModal} handleClose={() => {
                 setOpenEventModal(false)
-                // setRecipe(null)
-                // refreshRecipes()
-
+                refreshEvents()
             }}
                         event={null}
+                        handleCancel={() => {
+                            setOpenEventModal(false)
+                        }}
             />
             <FloatingAddButton setOpen={() => setOpenEventModal(true)}/>
 

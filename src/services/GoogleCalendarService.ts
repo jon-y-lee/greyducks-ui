@@ -10,7 +10,6 @@ const API_URL = 'http://localhost:8081/events'
 export const GoogleCalendarService = {
 
     async getCalendarColors() {
-
         return axios
             .get(GOOGLE_CALENDAR_COLORS_URI, {
                 headers: {
@@ -71,5 +70,19 @@ export const GoogleCalendarService = {
                 return weeklyEventMap;
             })
         return new Map()
+    },
+
+    async createEvent(event: Event) {
+        return axios
+            .post(API_URL, event)
+            .catch(error => {
+                if (error?.response?.status == 401) {
+                    throw error;
+                }
+            })
+            .then((res) => {
+                console.log("result:" + JSON.stringify(res))
+                return res?.data;
+            })
     },
 };

@@ -23,8 +23,8 @@ const Profile = () => {
                     <p>Email Address: {userContext.email}</p>
                     <p>email: {userContext.email}</p>
                     <p>token: {userContext.token}</p>
-                    <p>token: {userContext.refresh_token}</p>
-                    <p>token: {userContext.expiration_ts}</p>
+                    <p>refresh token: {userContext.refresh_token}</p>
+                    <p>expirey date: {userContext.expiration_ts}</p>
                     {/*{JSON.stringify(userContext)}*/}
                     <br/>
                     <br/>

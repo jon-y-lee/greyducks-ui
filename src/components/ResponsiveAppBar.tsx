@@ -134,238 +134,237 @@ function ResponsiveAppBar() {
     };
 
     return (
-                <>
-                    {/*user {JSON.stringify(user)}*/}
-                    <Box sx={{display: 'flex'}}>
-                        <AppBar position="static" style={{backgroundColor: "white"}} elevation={0}>
-                            <Container maxWidth="xl">
-                                <Toolbar disableGutters>
-                                    {
-                                        userContext?.token ?
-                                            <IconButton
-                                                size="large"
-                                                edge="start"
-                                                color="inherit"
-                                                aria-label="menu"
-                                                sx={{
-                                                    mr: 2,
-                                                    color: 'grey',
-                                                }}
-                                                onClick={() => setOpen(!open)}
-                                            >
-                                                <MenuIcon/>
-                                            </IconButton>
-                                            : null}
-                                    <Typography
-                                        variant="h6"
-                                        noWrap
+        <>
+            <Box sx={{display: 'flex'}}>
+                <AppBar position="static" style={{backgroundColor: "white"}} elevation={0}>
+                    <Container maxWidth="xl">
+                        <Toolbar disableGutters>
+                            {
+                                userContext?.token ?
+                                    <IconButton
+                                        size="large"
+                                        edge="start"
+                                        color="inherit"
+                                        aria-label="menu"
                                         sx={{
                                             mr: 2,
-                                            display: {md: 'flex'},
-                                            fontWeight: 700,
-                                            letterSpacing: '.3rem',
-                                            color: 'black',
-                                            textDecoration: 'none',
-                                        }}
-                                        component={Link}
-                                        to={"/"}
-                                    >
-                                        GrayDuck
-                                    </Typography>
-
-                                    <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
-                                        <IconButton
-                                            size="large"
-                                            aria-label="account of current user"
-                                            aria-controls="menu-appbar"
-                                            aria-haspopup="true"
-                                            onClick={handleOpenNavMenu}
-                                            color="inherit"
-                                        >
-                                            <MenuIcon/>
-                                        </IconButton>
-                                        <Menu
-                                            id="menu-appbar"
-                                            anchorEl={anchorElNav}
-                                            anchorOrigin={{
-                                                vertical: 'bottom',
-                                                horizontal: 'left',
-                                            }}
-                                            keepMounted
-                                            transformOrigin={{
-                                                vertical: 'top',
-                                                horizontal: 'left',
-                                            }}
-                                            open={Boolean(anchorElNav)}
-                                            onClose={handleCloseNavMenu}
-                                            sx={{
-                                                display: {xs: 'block', md: 'none'},
-                                            }}
-                                        >
-                                            {pages.map((page: any) => (
-                                                <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                                                    <Typography textAlign="center">{page.name}</Typography>
-                                                </MenuItem>
-                                            ))}
-                                        </Menu>
-                                    </Box>
-                                    <AdbIcon sx={{display: {xs: 'flex', md: 'none'}, mr: 1}}/>
-                                    <Typography
-                                        variant="h5"
-                                        noWrap
-                                        component="a"
-                                        href="#app-bar-with-responsive-menu"
-                                        sx={{
-                                            mr: 2,
-                                            display: {xs: 'flex', md: 'none'},
-                                            flexGrow: 1,
-                                            fontFamily: 'monospace',
-                                            fontWeight: 700,
-                                            letterSpacing: '.3rem',
                                             color: 'grey',
-                                            textDecoration: 'none',
                                         }}
+                                        onClick={() => setOpen(!open)}
                                     >
-                                    </Typography>
-                                    <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
-                                        {pages.map((page: any) => (
-                                            <Button
-                                                key={page.name}
-                                                component={Link}
-                                                to={page.path}
-                                                sx={{my: 2, color: 'grey'}}
-                                            >
-                                                {page.name}
-                                            </Button>
-                                        ))}
-                                    </Box>
-                                    <Typography
-                                        variant="h6"
-                                        noWrap
-                                        sx={{
-                                            letterSpacing: '.1rem',
-                                            textAlign: 'right',
-                                            color: 'black',
-                                            mr: '10px'
-                                        }}
-                                    >
-                                        {
-                                            date.toLocaleDateString(undefined, {
-                                                month: 'long',
-                                                day: 'numeric',
-                                                hour: 'numeric',
-                                                minute: 'numeric'
+                                        <MenuIcon/>
+                                    </IconButton>
+                                    : null}
+                            <Typography
+                                variant="h6"
+                                noWrap
+                                sx={{
+                                    mr: 2,
+                                    display: {md: 'flex'},
+                                    fontWeight: 700,
+                                    letterSpacing: '.3rem',
+                                    color: 'black',
+                                    textDecoration: 'none',
+                                }}
+                                component={Link}
+                                to={"/"}
+                            >
+                                GrayDuck
+                            </Typography>
 
-                                            })}
-                                    </Typography>
-
-                                    <Box sx={{flexGrow: 0}}>
-                                        {user?.token ?
-                                            <>
-                                                <Tooltip title="Open settings">
-                                                    <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
-                                                        <Avatar src={pictureSource}/>
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </> :
-                                            // background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
-                                            <Button
-                                                sx={{
-                                                    // outlineColor: 'linear-gradient(to right bottom, #36EAEF, #6B0AC9)',
-                                                    // outlineColor: 'red',
-                                                    // px: 2,
-                                                    // color: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 25%, rgba(209,0,255,1) 81%)',
-                                                    // backgroundColor: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 25%, rgba(209,0,255,1) 81%)',
-                                                    // backgroundColor: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 25%, rgba(209,0,255,1) 81%)'
-                                                    // background: 'linear-gradient(to right bottom, #36EAEF, #6B0AC9)',
-                                                }}
-                                                key={"login"} onClick={handleOpenLogin} variant={'outlined'}
-className={'loginbutton'}
-                                            >Login</Button>
-                                        }
-
-                                        <Menu
-                                            sx={{mt: '45px'}}
-                                            id="menu-appbar"
-                                            anchorEl={anchorElUser}
-                                            anchorOrigin={{
-                                                vertical: 'top',
-                                                horizontal: 'right',
-                                            }}
-                                            keepMounted
-                                            transformOrigin={{
-                                                vertical: 'top',
-                                                horizontal: 'right',
-                                            }}
-                                            open={Boolean(anchorElUser)}
-                                            onClose={handleCloseUserMenu}
-                                        >
-                                            <MenuItem key={'logout'} onClick={logOut}>
-                                                <Typography textAlign="center">logout</Typography>
-                                            </MenuItem>
-                                            <MenuItem key={'profile'} onClick={profile}>
-                                                <Typography textAlign="center">profile</Typography>
-                                            </MenuItem>
-
-                                        </Menu>
-                                    </Box>
-                                </Toolbar>
-                            </Container>
-                        </AppBar>
-                        <Drawer
-                            variant="temporary"
-                            anchor="left"
-                            open={open}
-                            onClose={handleDrawerClose}
-
-                        >
-                            {/*ModalProps={{ onBackdropClick: handleDrawerClose() }}*/}
-
-                            <DrawerHeader>
-                                <IconButton onClick={handleDrawerClose}>
-                                    {theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
+                            <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
+                                <IconButton
+                                    size="large"
+                                    aria-label="account of current user"
+                                    aria-controls="menu-appbar"
+                                    aria-haspopup="true"
+                                    onClick={handleOpenNavMenu}
+                                    color="inherit"
+                                >
+                                    <MenuIcon/>
                                 </IconButton>
-                            </DrawerHeader>
-                            <Divider/>
-                            <List>
-                                {navOptions.map((option, index) => (
-                                    <ListItem key={option.name} sx={{display: 'block'}}>
-                                        <ListItemButton
-                                            sx={{
-                                                minHeight: 48,
-                                                justifyContent: open ? 'initial' : 'center',
-                                                px: 2.5,
-                                            }}
-                                            component={Link}
-                                            to={option.path}
-                                            onClick={handleDrawerClose}
-                                        >
-                                            {option.element}
-                                        </ListItemButton>
-                                    </ListItem>
-                                ))}
-                            </List>
-                            <Divider/>
-                            <List>
-                                <ListItem key={'settings'} sx={{display: 'block'}}>
-                                    <ListItemButton
-                                        sx={{
-                                            minHeight: 48,
-                                            justifyContent: open ? 'initial' : 'center',
-                                            px: 2.5,
-                                        }}
+                                <Menu
+                                    id="menu-appbar"
+                                    anchorEl={anchorElNav}
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'left',
+                                    }}
+                                    keepMounted
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left',
+                                    }}
+                                    open={Boolean(anchorElNav)}
+                                    onClose={handleCloseNavMenu}
+                                    sx={{
+                                        display: {xs: 'block', md: 'none'},
+                                    }}
+                                >
+                                    {pages.map((page: any) => (
+                                        <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                                            <Typography textAlign="center">{page.name}</Typography>
+                                        </MenuItem>
+                                    ))}
+                                </Menu>
+                            </Box>
+                            <AdbIcon sx={{display: {xs: 'flex', md: 'none'}, mr: 1}}/>
+                            <Typography
+                                variant="h5"
+                                noWrap
+                                component="a"
+                                href="#app-bar-with-responsive-menu"
+                                sx={{
+                                    mr: 2,
+                                    display: {xs: 'flex', md: 'none'},
+                                    flexGrow: 1,
+                                    fontFamily: 'monospace',
+                                    fontWeight: 700,
+                                    letterSpacing: '.3rem',
+                                    color: 'grey',
+                                    textDecoration: 'none',
+                                }}
+                            >
+                            </Typography>
+                            <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
+                                {pages.map((page: any) => (
+                                    <Button
+                                        key={page.name}
                                         component={Link}
-                                        to={'/settings'}
-                                        onClick={handleDrawerClose}
+                                        to={page.path}
+                                        sx={{my: 2, color: 'grey'}}
                                     >
-                                        <SettingsIcon/>
-                                    </ListItemButton>
-                                </ListItem>
-                            </List>
-                        </Drawer>
-                    </Box>
-                    <LoginModal open={login} handleClose={handleCloseLogin}/>
-                </>
+                                        {page.name}
+                                    </Button>
+                                ))}
+                            </Box>
+                            <Typography
+                                variant="h6"
+                                noWrap
+                                sx={{
+                                    letterSpacing: '.1rem',
+                                    textAlign: 'right',
+                                    color: 'black',
+                                    mr: '10px'
+                                }}
+                            >
+                                {
+                                    date.toLocaleDateString(undefined, {
+                                        month: 'long',
+                                        day: 'numeric',
+                                        hour: 'numeric',
+                                        minute: 'numeric'
+
+                                    })}
+                            </Typography>
+
+                            <Box sx={{flexGrow: 0}}>
+                                {user?.token ?
+                                    <>
+                                        <Tooltip title="Open settings">
+                                            <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
+                                                <Avatar src={pictureSource}/>
+                                            </IconButton>
+                                        </Tooltip>
+                                    </> :
+                                    // background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
+                                    <Button
+                                        sx={{
+                                            // outlineColor: 'linear-gradient(to right bottom, #36EAEF, #6B0AC9)',
+                                            // outlineColor: 'red',
+                                            // px: 2,
+                                            // color: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 25%, rgba(209,0,255,1) 81%)',
+                                            // backgroundColor: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 25%, rgba(209,0,255,1) 81%)',
+                                            // backgroundColor: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 25%, rgba(209,0,255,1) 81%)'
+                                            // background: 'linear-gradient(to right bottom, #36EAEF, #6B0AC9)',
+                                        }}
+                                        key={"login"} onClick={handleOpenLogin} variant={'outlined'}
+                                        className={'loginbutton'}
+                                    >Login</Button>
+                                }
+
+                                <Menu
+                                    sx={{mt: '45px'}}
+                                    id="menu-appbar"
+                                    anchorEl={anchorElUser}
+                                    anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    keepMounted
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    open={Boolean(anchorElUser)}
+                                    onClose={handleCloseUserMenu}
+                                >
+                                    <MenuItem key={'logout'} onClick={logOut}>
+                                        <Typography textAlign="center">logout</Typography>
+                                    </MenuItem>
+                                    <MenuItem key={'profile'} onClick={profile}>
+                                        <Typography textAlign="center">profile</Typography>
+                                    </MenuItem>
+
+                                </Menu>
+                            </Box>
+                        </Toolbar>
+                    </Container>
+                </AppBar>
+                <Drawer
+                    variant="temporary"
+                    anchor="left"
+                    open={open}
+                    onClose={handleDrawerClose}
+
+                >
+                    {/*ModalProps={{ onBackdropClick: handleDrawerClose() }}*/}
+
+                    <DrawerHeader>
+                        <IconButton onClick={handleDrawerClose}>
+                            {theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
+                        </IconButton>
+                    </DrawerHeader>
+                    <Divider/>
+                    <List>
+                        {navOptions.map((option, index) => (
+                            <ListItem key={option.name} sx={{display: 'block'}}>
+                                <ListItemButton
+                                    sx={{
+                                        minHeight: 48,
+                                        justifyContent: open ? 'initial' : 'center',
+                                        px: 2.5,
+                                    }}
+                                    component={Link}
+                                    to={option.path}
+                                    onClick={handleDrawerClose}
+                                >
+                                    {option.element}
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
+                    </List>
+                    <Divider/>
+                    <List>
+                        <ListItem key={'settings'} sx={{display: 'block'}}>
+                            <ListItemButton
+                                sx={{
+                                    minHeight: 48,
+                                    justifyContent: open ? 'initial' : 'center',
+                                    px: 2.5,
+                                }}
+                                component={Link}
+                                to={'/settings'}
+                                onClick={handleDrawerClose}
+                            >
+                                <SettingsIcon/>
+                            </ListItemButton>
+                        </ListItem>
+                    </List>
+                </Drawer>
+            </Box>
+            <LoginModal open={login} handleClose={handleCloseLogin}/>
+        </>
     );
 }
 
