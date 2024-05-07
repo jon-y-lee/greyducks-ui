@@ -1,5 +1,4 @@
 import axios from "axios";
-import {Task, TaskList} from "../contexts/tasks/Task";
 import {Recipe} from "../contexts/recipes/Recipe";
 
 const API_URI = 'http://localhost:8081/recipes'

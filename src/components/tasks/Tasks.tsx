@@ -23,6 +23,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import TasksModal from "./TasksModal";
 import AddIcon from "@mui/icons-material/Add";
 import {UserService, UserSetting} from "../../services/UserService";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const Tasks = () => {
 
@@ -126,10 +127,6 @@ const Tasks = () => {
                 })
             })
         }).catch(res => console.log("Unable to get user settings"))
-
-        // UserService.userSettings().then(res => {
-        //     setUserSettings(res)
-        // }).catch(res => console.log("Unable to get user settings"))
     }
 
     useEffect(() => {
@@ -140,6 +137,16 @@ const Tasks = () => {
         console.log("Adding Task to taskList " + taskListId)
         setOpenTaskModal(taskListId)
     };
+
+    const deleteTask = (id: String, taskListId: String) => {
+        TasksService.deleteTask(taskListId, id)
+        updateTasks();
+    }
+
+    function updateTaskChecked(task: Task, taskListId: String) {
+        TasksService.updateTaskChecked(taskListId, task)
+        updateTasks();
+    }
 
     return (
         <div>
@@ -173,17 +180,25 @@ const Tasks = () => {
                                         }
                                         title={taskList?.title}
                                     />
-                                    {tasksMap[taskList.id]?.map((task: Task) => {
+                                    {tasksMap[taskList.id]?.sort((t1: Task, t2: Task) => t1!!.title!!.localeCompare(t2.title!!.toString(), 'en')).map((task: Task) => {
                                         return (
                                             <CardActions>
                                                 <FormControlLabel
                                                     control={<IOSSwitch sx={{m: 1}}
+                                                                        onClick={() => {
+                                                                            console.log("checked");
+                                                                            updateTaskChecked(task, task.taskListId)
+                                                                        }
+                                                                        }
                                                                         checked={task?.status != 'needsAction'}/>}
                                                     label={task?.title}
                                                 />
 
                                                 <div style={{display: 'grid', justifyItems: 'end'}}>
-                                                    deletse
+                                                    <IconButton sx={{"&:hover": {color: "green"}, color: 'transparent'}}
+                                                                onClick={() => deleteTask(task.id, task.taskListId)}>
+                                                        <DeleteIcon/>
+                                                    </IconButton>
                                                 </div>
 
                                             </CardActions>

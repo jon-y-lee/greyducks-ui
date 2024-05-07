@@ -4,6 +4,8 @@ import {LOCAL_STORE_KEYS} from "../../components/Constants";
 export interface UserAuthentication {
     name: string | null,
     token: string | null,
+    refresh_token: string | null,
+    expiration_ts: string | null,
     email: string | null,
     id:string | null,
     given_name: string | null,
@@ -15,6 +17,8 @@ export interface UserAuthentication {
 export const AuthContext = React.createContext<UserAuthentication | null>({
     name: null,
     token: null,
+    refresh_token: null,
+    expiration_ts: null,
     email:  null,
     id: null,
     given_name: null,

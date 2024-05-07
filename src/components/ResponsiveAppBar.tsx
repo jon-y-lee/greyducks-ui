@@ -19,7 +19,7 @@ import {Divider, List, ListItem, ListItemButton, makeStyles, styled, useTheme} f
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LoginModal from "./LoginModal";
-import {AuthContext} from '../contexts/auth/AuthContext';
+import {AuthContext, getUserContextFromLocalStore, UserAuthentication} from '../contexts/auth/AuthContext';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import RamenDiningIcon from '@mui/icons-material/RamenDining';
@@ -56,12 +56,19 @@ function ResponsiveAppBar() {
     const [pictureSource, setPictureSource] = React.useState('');
     const userContext = useContext(AuthContext);
     const navigate = useNavigate();
+    const [user, setUser] = React.useState<UserAuthentication>({} as UserAuthentication);
 
     useEffect(() => {
-        let pictureSource = userContext?.picture;
+        var user = getUserContextFromLocalStore();
+        console.log("  APP BAR:" + JSON.stringify(user))
+
+        let pictureSource = user?.picture;
         if (pictureSource == null || pictureSource == undefined) {
             pictureSource = "";
         }
+
+        console.log("Picutre:" + pictureSource);
+        setUser(user)
         setPictureSource(pictureSource)
     }, [userContext]);
 
@@ -127,10 +134,8 @@ function ResponsiveAppBar() {
     };
 
     return (
-
-        <AuthContext.Consumer>
-            {user => (
                 <>
+                    {/*user {JSON.stringify(user)}*/}
                     <Box sx={{display: 'flex'}}>
                         <AppBar position="static" style={{backgroundColor: "white"}} elevation={0}>
                             <Container maxWidth="xl">
@@ -361,8 +366,6 @@ className={'loginbutton'}
                     </Box>
                     <LoginModal open={login} handleClose={handleCloseLogin}/>
                 </>
-            )}
-        </AuthContext.Consumer>
     );
 }
 

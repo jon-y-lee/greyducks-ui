@@ -11,87 +11,65 @@ export const GoogleCalendarService = {
 
     async getCalendarColors() {
 
-        let userContext: UserAuthentication | null = null;
-        const userPrincipleString = localStorage.getItem(LOCAL_STORE_KEYS.USER_PRINCIPLE);
-        if (userPrincipleString != null) {
-            userContext = JSON.parse(userPrincipleString);
-        }
+        return axios
+            .get(GOOGLE_CALENDAR_COLORS_URI, {
+                headers: {
+                    Accept: 'application/json'
+                }
+            })
+            .catch(error => {
+                if (error?.response?.status == 401) {
+                    throw error;
+                }
+            })
+            .then((res) => {
 
-        if (userContext) {
-            return axios
-                .get(GOOGLE_CALENDAR_COLORS_URI, {
-                    headers: {
-                        Authorization: `Bearer ${userContext.token}`,
-                        Accept: 'application/json'
-                    }
-                })
-                .catch(error => {
-                    if (error?.response?.status == 401) {
-                        throw error;
-                    }
-                })
-                .then((res) => {
+                let colorMap = [];
 
-                    let colorMap = [];
+                for (const key in res?.data?.calendar) {
+                    const value = res?.data?.calendar[key];
+                    colorMap.push(value)
+                }
 
-                    for (const key in res?.data?.calendar) {
-                        // Get the strongly typed value with this name:
-                        const value = res?.data?.calendar[key];
-                        colorMap.push(value)
-                    }
+                return colorMap;
+            })
 
-                    console.log("ColorMap:" + JSON.stringify(colorMap))
-
-                    return colorMap;
-                })
-        }
-        return null
     },
 
     async getCalendarEvents(startDate: String, endDate: String) {
 
-        let userContext: UserAuthentication | null = null;
-        const userPrincipleString = localStorage.getItem(LOCAL_STORE_KEYS.USER_PRINCIPLE);
-        if (userPrincipleString != null) {
-            userContext = JSON.parse(userPrincipleString);
-        }
+        return axios
+            .get(API_URL + `?startTime=` +
+                startDate + '&endTime=' + endDate, {
+                headers: {
+                    Accept: 'application/json'
+                }
+            })
+            .catch(error => {
+                if (error?.response?.status == 401) {
+                    throw error;
+                }
+            })
+            .then((res) => {
+                const weeklyEventMap = new Map<number, Event[]>();
+                res?.data['items'].map((item: any) => {
+                    const startDateTime = new Date(item.start.dateTime);
+                    const endDateTime = new Date(item.start.dateTime);
+                    const startDate = startDateTime.getDay();
 
-        if (userContext) {
-            return axios
-                .get(API_URL + `?startTime=` +
-                    startDate + '&endTime=' + endDate, {
-                    headers: {
-                        Authorization: `Bearer ${userContext.token}`,
-                        Accept: 'application/json'
+                    let eventList = weeklyEventMap.get(startDate);
+
+                    if (eventList == null) {
+                        eventList = new Array<Event>();
+                        eventList.push(item)
+                    } else {
+                        eventList.push(item)
                     }
-                })
-                .catch(error => {
-                    if (error?.response?.status == 401) {
-                        throw error;
-                    }
-                })
-                .then((res) => {
-                    const weeklyEventMap = new Map<number, Event[]>();
-                    res?.data['items'].map((item: any) => {
-                        const startDateTime = new Date(item.start.dateTime);
-                        const endDateTime = new Date(item.start.dateTime);
-                        const startDate = startDateTime.getDay();
+                    weeklyEventMap.set(startDate, eventList)
+                });
 
-                        let eventList = weeklyEventMap.get(startDate);
-
-                        if (eventList == null) {
-                            eventList = new Array<Event>();
-                            eventList.push(item)
-                        } else {
-                            eventList.push(item)
-                        }
-                        weeklyEventMap.set(startDate, eventList)
-                    });
-
-                    return weeklyEventMap;
-                })
-
-        }
+                return weeklyEventMap;
+            })
         return new Map()
     },
 };

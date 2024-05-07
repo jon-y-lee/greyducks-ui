@@ -28,7 +28,7 @@ export const UserService = {
                 }
             })
             .then((res) => {
-                console.log("User found")
+                // console.log("User found " + JSON.stringify(res.data))
                 const userPrinciple = {
                     name: res.data?.name,
                     token: access_token,
@@ -38,18 +38,16 @@ export const UserService = {
                     family_name: res.data?.family_name,
                     picture: res.data?.picture,
                 }
+
+                console.log("User found " + JSON.stringify(userPrinciple))
                 return userPrinciple;
             })
     },
 
     async userSettings() {
-        // if (access_token == undefined) {
-        //     console.log("SER SETTINGS!!!! UNDEFINED:" + access_token)
-        // }
         return axios
             .get(API_URL + "settings", {
                 headers: {
-                    // Authorization: `Bearer ` + access_token,
                     Accept: 'application/json'
                 }
             })

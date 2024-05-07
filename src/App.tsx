@@ -33,13 +33,15 @@ function App() {
     const toggleAuth = (
         name: string,
         token: string,
+        refresh_token: string,
+        expiration_ts: string,
         email: string,
         id: string,
         given_name: string,
         family_name: string,
         picture: string
     ) => {
-        setCurrentAuthenticatedUser({name, token, email, id, given_name, family_name, picture, toggleAuth})
+        setCurrentAuthenticatedUser({name, token, refresh_token, expiration_ts, email, id, given_name, family_name, picture, toggleAuth})
     };
 
     const darkTheme = createTheme({
@@ -61,6 +63,8 @@ function App() {
         = useState<UserAuthentication>({
         name: null,
         token: null,
+        refresh_token: null,
+        expiration_ts: null,
         email: null,
         id: null,
         given_name: null,
@@ -97,24 +101,21 @@ function App() {
     ]);
 
     axios.interceptors.response.use(response => {
-        console.log("Response Interceptor")
         return response;
     }, error => {
         if (error?.response?.status === 401) {
             console.log("ERROR 401!!!")
             localStorage.removeItem(LOCAL_STORE_KEYS.USER_PRINCIPLE)
             setLogin(true);
-            // const url = new URL("/");
-            // history.pushState({}, "", url)
-            //place your reentry code
         }
         return error;
     });
 
     axios.interceptors.request.use(request => {
-        const token = getUserContextFromLocalStore().token
-        console.log("Request Interceptor")
-        request.headers.setAuthorization('Bearer ' + token)
+        const userContext = getUserContextFromLocalStore()
+        if (userContext != undefined) {
+            request.headers.setAuthorization('Bearer ' + userContext.token)
+        }
         return request;
     })
 

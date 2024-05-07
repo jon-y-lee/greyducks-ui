@@ -15,11 +15,15 @@ const AuthChecker = () => {
     useEffect(() => {
         const userPrincipleString = localStorage.getItem(LOCAL_STORE_KEYS.USER_PRINCIPLE);
 
-        if (userPrincipleString != null) {
+        console.log("Auth Checker: User Principal String auth checker:" + JSON.stringify(userPrincipleString))
+        if (userPrincipleString != null && userPrincipleString != "{}") {
             const userPrinciple: UserAuthentication = JSON.parse(userPrincipleString);
+            console.log("  Auth Checker: Found a user")
 
             userContext?.toggleAuth(userPrinciple?.name,
                 userPrinciple?.token,
+                userPrinciple?.refresh_token,
+                userPrinciple?.expiration_ts,
                 userPrinciple.email,
                 userPrinciple.id,
                 userPrinciple.given_name,

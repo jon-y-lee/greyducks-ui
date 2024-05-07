@@ -2,10 +2,11 @@ import React, {useContext, useEffect, useState} from 'react';
 import {Backdrop, Box, Button, CircularProgress, Modal} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {googleLogout, useGoogleLogin} from "@react-oauth/google";
-import {AuthContext} from '../contexts/auth/AuthContext';
+import {AuthContext, UserAuthentication} from '../contexts/auth/AuthContext';
 import {LOCAL_STORE_KEYS} from "./Constants";
 import {UserService} from "../services/UserService";
 import {isEmpty} from "radash";
+import {GoogleTokenService} from "../services/GoogleTokenService";
 
 interface LoginModalInterface {
     open: boolean,
@@ -45,6 +46,7 @@ const LoginModal = (loginModalInterface: LoginModalInterface) => {
 
         onSuccess: (codeResponse: any) => {
             console.log("Success:" + JSON.stringify(codeResponse))
+            // alert("Successful login:" + JSON.stringify(codeResponse))
             setUser(codeResponse)
             handleClose()
             setBackdropOpen(false)
@@ -53,8 +55,7 @@ const LoginModal = (loginModalInterface: LoginModalInterface) => {
             console.log('Login Failed:', error)
             setBackdropOpen(false)
         },
-
-
+        flow: 'auth-code',
     });
     const logOut = () => {
         googleLogout();
@@ -64,19 +65,48 @@ const LoginModal = (loginModalInterface: LoginModalInterface) => {
     useEffect(
         () => {
             if (!isEmpty(user)) {
-                console.log("LOG MODAL - USER:" + JSON.stringify(user))
-                UserService.userInfo(user.access_token).then(userPrinciple => {
-                    userContext?.toggleAuth(userPrinciple?.name,
-                        userPrinciple?.token,
-                        userPrinciple.email,
-                        userPrinciple.id,
-                        userPrinciple.given_name,
-                        userPrinciple.family_name,
-                        userPrinciple.picture);
+                console.log("LOG MODAL - USER:" + JSON.stringify(user.code))
 
-                    localStorage.setItem(LOCAL_STORE_KEYS.USER_PRINCIPLE, JSON.stringify(userPrinciple));
+                GoogleTokenService.getAccessTokenFromCode(user.code).then((authorizedPrincipal: any) => {
+                    console.log("authorizedPrincipal - USER:" + JSON.stringify(authorizedPrincipal))
 
-                }).catch((err) => console.log(err));
+                    const tokenStore = {
+                        token: authorizedPrincipal?.access_token
+                    }
+
+                    // Store token info
+                    localStorage.setItem(LOCAL_STORE_KEYS.USER_PRINCIPLE, JSON.stringify(tokenStore));
+
+                    console.log("tokenStore:" + JSON.stringify(tokenStore))
+                    console.log("Getting  USER Profile:" + JSON.stringify(authorizedPrincipal))
+
+                    UserService.userInfo(authorizedPrincipal.access_token).then(userPrinciple => {
+
+                        var expiryDate = new Date();
+                        expiryDate.setSeconds(expiryDate.getSeconds() + authorizedPrincipal?.expires_in);
+
+                        let user = {
+                            name: userPrinciple?.name,
+                            token: userPrinciple?.token,
+                            test: "asdfasdfasd",
+                            refresh_token: authorizedPrincipal?.refresh_token,
+                            expiration_ts: expiryDate.toLocaleString(),
+                            email: userPrinciple.email,
+                            id: userPrinciple.id,
+                            given_name: userPrinciple.given_name,
+                            family_name: userPrinciple.family_name,
+                            picture: userPrinciple.picture,
+                        }
+
+                        console.log("User Info || STORED || :" + JSON.stringify(user))
+
+                        userContext?.toggleAuth(user);
+
+                        localStorage.setItem(LOCAL_STORE_KEYS.USER_PRINCIPLE, JSON.stringify(user));
+
+                    }).catch((err) => console.log(err));
+                })
+
             }
         },
         [user]

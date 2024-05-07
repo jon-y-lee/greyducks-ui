@@ -65,13 +65,13 @@ const Settings = () => {
                             selected={selectedIndex === 2}
                             onClick={(event) => handleListItemClick(event, 2)}
                         >
-                            <ListItemText primary="Trash"/>
+                            <ListItemText primary="Recipe"/>
                         </ListItemButton>
                         <ListItemButton
                             selected={selectedIndex === 3}
                             onClick={(event) => handleListItemClick(event, 3)}
                         >
-                            <ListItemText primary="Spam"/>
+                            <ListItemText primary="Notifications"/>
                         </ListItemButton>
                     </List>
 

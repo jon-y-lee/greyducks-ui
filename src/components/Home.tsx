@@ -42,7 +42,9 @@ const Home = () => {
                         Our Mission
                     </Typography>
                     <Typography variant="h4" gutterBottom>
+                        <div className={'typewriter'}>
                         Making Sunday Morning Planning Easier
+                        </div>
                     </Typography>
                 </div>
 

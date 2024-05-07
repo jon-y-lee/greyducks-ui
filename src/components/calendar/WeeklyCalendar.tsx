@@ -9,6 +9,9 @@ import {useNavigate} from "react-router-dom";
 import Box from "@mui/material/Box";
 import {isEmpty} from "radash";
 import LoadingBackDrop from "../backdrops/LoadingBackDrop";
+import RecipeModal from "../recipes/RecipeModal";
+import EventModal from "./EventModal";
+import FloatingAddButton from "../FloatingAddButton";
 
 const WeeklyCalendar = () => {
 
@@ -17,6 +20,7 @@ const WeeklyCalendar = () => {
     const navigate = useNavigate();
     const [currentWeek, setCurrentWeek] = useState<any>({});
     const [backdropOpen, setBackdropOpen]: any = useState(false);
+    const [openEventModal, setOpenEventModal] = useState(false)
 
     useEffect(() => {
         // const sunday = currentWeek['0']?.isoString;
@@ -43,7 +47,6 @@ const WeeklyCalendar = () => {
         setCurrentWeek(getCurrentWeek());
 
         GoogleCalendarService.getCalendarColors().then(calendarColors => {
-            console.log('cal colors:' + JSON.stringify(calendarColors))
             setCalendarColors(calendarColors);
         }).catch(error => {
             console.log(error);
@@ -79,18 +82,12 @@ const WeeklyCalendar = () => {
     }
 
     const formatEventCard = (event: Event) => {
-
         let color = 'lightgray';
-
-
         if (event.colorId !== null && event.colorId !== undefined) {
-            console.log("ColorId:" + event.colorId)
             if (calendarColors) {
-                console.log("Calendar Colos:" + JSON.stringify(calendarColors))
                 color = calendarColors?.[event.colorId]?.background
             }
         }
-        console.log("Color:" + color);
         return (
             <Card sx={{width: '100%', marginBottom: '10px'}}>
                 <CardHeader
@@ -157,6 +154,16 @@ const WeeklyCalendar = () => {
             </div>
             <LoadingBackDrop
                 isOpen={backdropOpen}/>
+            <EventModal open={openEventModal} handleClose={() => {
+                setOpenEventModal(false)
+                // setRecipe(null)
+                // refreshRecipes()
+
+            }}
+                        event={null}
+            />
+            <FloatingAddButton setOpen={() => setOpenEventModal(true)}/>
+
         </div>
     );
 };
