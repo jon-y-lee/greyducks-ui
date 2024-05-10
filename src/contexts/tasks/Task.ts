@@ -1,14 +1,14 @@
 
 export interface Task {
-    taskListId: String,
-    id: String,
-    title?: String,
-    notes?: String,
-    status?: String,
-    completed?: String,
-    deleted?: String,
+    taskListId: string,
+    id: string,
+    title: string,
+    notes?: string,
+    status?: string,
+    completed?: string,
+    deleted?: string,
     hidden?: Boolean,
-    userId?: String
+    userId?: string
 }
 
 export interface TaskList {

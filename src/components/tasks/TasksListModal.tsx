@@ -42,20 +42,24 @@ const TasksListModal = (tasksEditModalInterface: TasksListEditModalInterface) =>
     const [backdropOpen, setBackdropOpen]: any = useState(false);
     const [taskList, setTaskList] = useState<TaskList>(initTaskList)
     const [title, setTitle] = useState<String>(initTaskList?.title);
-    const [assignedUser, setAssignedUser] = useState<String>("");
+    const [assignedUser, setAssignedUser] = useState<string>("");
 
     useEffect(
         () => {
             if (initTaskList) {
                 setTaskList(initTaskList)
+                setTitle(initTaskList.title)
+                if (initTaskList?.assignedProfileId){
+                    setAssignedUser(initTaskList?.assignedProfileId)
+                }
             }
         },
         [initTaskList]
     );
 
-    const [selectedColor, setSelectedColor] = React.useState('');
+    // const [selectedColor, setSelectedColor] = React.useState('');
 
-    const handleAssignedChange = (event: String) => {
+    const handleAssignedChange = (event: string) => {
         setAssignedUser(event);
     };
 
@@ -99,17 +103,22 @@ const TasksListModal = (tasksEditModalInterface: TasksListEditModalInterface) =>
                         </Select>
                     </FormControl>
                 </Typography>
-                <Button onClick={() => {
+                <Button
+                    disabled={title == null || title?.length == 0}
+                    onClick={() => {
                     taskList.title = title.toString();
                     taskList.assignedProfileId = assignedUser.toString()
                     TasksService.createOrUpdateTasks(taskList).then((tl: any) => {
+                        setTitle("")
+                        setAssignedUser("")
                         handleClose(tl)
                         setTaskList({} as TaskList)
                     })
                 }}>Save</Button>
                 <Button onClick={() => {
                     TasksService.deleteTaskList(taskList.id).then((tl: any) => {
-                        // handleClose(userSetting)
+                        setTitle("")
+                        setAssignedUser("")
                         handleClose(tl)
                         setTaskList({} as TaskList)
                     })

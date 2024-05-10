@@ -53,23 +53,14 @@ function ResponsiveAppBar() {
     const [open, setOpen] = React.useState(false);
     const [login, setLogin] = React.useState(false);
     const [date, setDate] = React.useState(new Date());
-    const [pictureSource, setPictureSource] = React.useState('');
     const userContext = useContext(AuthContext);
     const navigate = useNavigate();
     const [user, setUser] = React.useState<UserAuthentication>({} as UserAuthentication);
 
     useEffect(() => {
         var user = getUserContextFromLocalStore();
-        console.log("  APP BAR:" + JSON.stringify(user))
 
-        let pictureSource = user?.picture;
-        if (pictureSource == null || pictureSource == undefined) {
-            pictureSource = "";
-        }
-
-        console.log("Picutre:" + pictureSource);
         setUser(user)
-        setPictureSource(pictureSource)
     }, [userContext]);
 
     setTimeout(() => {
@@ -123,6 +114,8 @@ function ResponsiveAppBar() {
             null,
             null,
             null,
+            null,
+            null,
             null);
         localStorage.removeItem(LOCAL_STORE_KEYS.USER_PRINCIPLE);
 
@@ -140,7 +133,7 @@ function ResponsiveAppBar() {
                     <Container maxWidth="xl">
                         <Toolbar disableGutters>
                             {
-                                userContext?.token ?
+                                user?.token ?
                                     <IconButton
                                         size="large"
                                         edge="start"
@@ -263,7 +256,7 @@ function ResponsiveAppBar() {
                                     <>
                                         <Tooltip title="Open settings">
                                             <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
-                                                <Avatar src={pictureSource}/>
+                                                <Avatar src={user?.picture ? user.picture : ""}/>
                                             </IconButton>
                                         </Tooltip>
                                     </> :

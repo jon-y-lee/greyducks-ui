@@ -1,7 +1,9 @@
 import axios from "axios";
 import {Task, TaskList} from "../contexts/tasks/Task";
+import {BASE_API_URI} from "./ServiceConstants";
 
-const API_URI = 'http://localhost:8081/taskLists'
+//const API_URI = 'http://localhost:8081/taskLists'
+const API_URI = BASE_API_URI + 'taskLists'
 
 export const TasksService = {
 

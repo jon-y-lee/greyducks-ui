@@ -1,7 +1,10 @@
 import axios from "axios";
 import {Recipe} from "../contexts/recipes/Recipe";
+import {BASE_API_URI} from "./ServiceConstants";
 
-const API_URI = 'http://localhost:8081/recipes'
+// const API_URI = 'http://localhost:8081/recipes'
+const API_URI = BASE_API_URI + 'recipes'
+
 const headers = {
     headers: {
         Accept: 'application/json',

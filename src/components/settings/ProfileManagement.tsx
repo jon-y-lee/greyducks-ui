@@ -9,6 +9,7 @@ import {GoogleCalendarService} from "../../services/GoogleCalendarService";
 import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import FloatingAddButton from "../FloatingAddButton";
 
 interface ProfileManagementPros {
     settings: UserSetting | undefined
@@ -35,19 +36,18 @@ const ProfileManagement: React.FC<ProfileManagementPros> = ({settings, updateSet
     }, [])
     return (
         <div>
-            <Grid container spacing={0} sx={{padding: '6px'}}>
-                <Grid item xs={12} sm={11} md={11} lg={11}/>
-                <Grid item xs={12} sm={1} md={1} lg={1}>
-                    <Typography variant="h5" color="text.primary" style={{display: 'inline-block'}}>
-                        <Button onClick={() => setOpenEditProfileModal(true)}><AddIcon/></Button>
-                    </Typography>
-                </Grid>
+            {/*<Grid container spacing={0} sx={{padding: '6px'}}>*/}
+            {/*    <Grid item xs={12} sm={11} md={11} lg={11}/>*/}
+            {/*    <Grid item xs={12} sm={1} md={1} lg={1}>*/}
+            {/*        <Typography variant="h5" color="text.primary" style={{display: 'inline-block'}}>*/}
+            {/*            <Button onClick={() => setOpenEditProfileModal(true)}><AddIcon/></Button>*/}
+            {/*        </Typography>*/}
+            {/*    </Grid>*/}
 
-            </Grid>
+            {/*</Grid>*/}
             {settings?.profiles.map((profile: Profile) => {
                 return <>
-
-                    <Card sx={{maxWidth: 345}}>
+                    <Card sx={{minWidth: "10rem", mb: "1rem"}}>
                         <CardHeader
                             avatar={
                                 <Avatar sx={{bgcolor: profile.color}}>
@@ -69,6 +69,8 @@ const ProfileManagement: React.FC<ProfileManagementPros> = ({settings, updateSet
                     </Card>
                 </>
             })}
+            <FloatingAddButton setOpen={() => setOpenEditProfileModal(true)}/>
+
             <ProfileManagementEditModal open={openEditProfileModal}
                                         handleClose={(userSetting: UserSetting) => {
                                             setOpenEditProfileModal(false)

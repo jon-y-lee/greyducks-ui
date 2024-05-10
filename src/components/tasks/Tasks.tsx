@@ -24,6 +24,8 @@ import TasksModal from "./TasksModal";
 import AddIcon from "@mui/icons-material/Add";
 import {UserService, UserSetting} from "../../services/UserService";
 import DeleteIcon from '@mui/icons-material/Delete';
+import LoadingBackDrop from "../backdrops/LoadingBackDrop";
+import Container from "@mui/material/Container";
 
 const Tasks = () => {
 
@@ -34,7 +36,8 @@ const Tasks = () => {
     const [taskList, setTaskList] = useState<TaskList>({} as TaskList);
     const [taskLists, setTaskLists] = useState<TaskList[]>([]);
     const [openEditModal, setOpenEditModal] = useState(false);
-    const [openTaskModal, setOpenTaskModal] = useState<String | null>(null);
+    const [openTaskModal, setOpenTaskModal] = useState<string | null>(null);
+    const [backdropOpen, setBackdropOpen]: any = useState(false);
 
     const [userSetting, setUserSettings] = useState<UserSetting>({} as UserSetting)
 
@@ -90,6 +93,7 @@ const Tasks = () => {
     }));
 
     const updateTasks = () => {
+        setBackdropOpen(true)
         UserService.userSettings().then(userSettingsResponse => {
             setUserSettings(userSettingsResponse)
 
@@ -125,6 +129,8 @@ const Tasks = () => {
 
                     setTasksMap(updatedTaskMap)
                 })
+            }).finally(() => {
+                setBackdropOpen(false)
             })
         }).catch(res => console.log("Unable to get user settings"))
     }
@@ -133,7 +139,7 @@ const Tasks = () => {
         updateTasks()
     }, [])
 
-    const handleAddTask = (taskListId: String) => {
+    const handleAddTask = (taskListId: string) => {
         console.log("Adding Task to taskList " + taskListId)
         setOpenTaskModal(taskListId)
     };
@@ -161,7 +167,11 @@ const Tasks = () => {
                 <Stack ml={5} mt={3} mr={5} justifyContent={'left'} direction="row" spacing={2}>
                     {taskLists?.map((taskList: TaskList) => {
                         return (
-                            <Card sx={{minWidth: '30vw'}} variant="outlined">
+                            <Card sx={{ width: '350px',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                margin: '20px'
+                            }} variant="outlined">
                                 <CardContent>
                                     <CardHeader
                                         avatar={
@@ -186,7 +196,6 @@ const Tasks = () => {
                                                 <FormControlLabel
                                                     control={<IOSSwitch sx={{m: 1}}
                                                                         onClick={() => {
-                                                                            console.log("checked");
                                                                             updateTaskChecked(task, task.taskListId)
                                                                         }
                                                                         }
@@ -194,20 +203,30 @@ const Tasks = () => {
                                                     label={task?.title}
                                                 />
 
-                                                <div style={{display: 'grid', justifyItems: 'end'}}>
-                                                    <IconButton sx={{"&:hover": {color: "green"}, color: 'transparent'}}
-                                                                onClick={() => deleteTask(task.id, task.taskListId)}>
-                                                        <DeleteIcon/>
-                                                    </IconButton>
-                                                </div>
+                                                <Container
+                                                         sx={{
+                                                             // alignSelf: "stretch",
+                                                             display: "flex",
+                                                             justifyContent: "flex-end",
+                                                             // alignItems: "flex-start",
+                                                             // 👇 Edit padding to further adjust position
+                                                             p: 0,
+                                                         }}
+                                                >
 
+                                                        <IconButton
+                                                                    onClick={() => deleteTask(task.id, task.taskListId)}>
+                                                            <DeleteIcon/>
+                                                        </IconButton>
+
+                                                </Container>
                                             </CardActions>
                                         )
                                     })}
 
                                 </CardContent>
-                                <CardActions sx={{justifyContent: 'end'}}>
-                                    Task <IconButton onClick={() => {
+                                <CardActions sx={{justifyContent: 'flex-end', marginTop: 'auto'}}>
+                                    <IconButton onClick={() => {
                                     handleAddTask(taskList.id)
                                 }}><AddIcon sx={{borderRadius: "28px"}}/></IconButton>
                                 </CardActions>
@@ -241,19 +260,20 @@ const Tasks = () => {
                         setTaskLists(updatedTaskList)
                     }
                     updateTasks()
+                    setTaskList({} as TaskList)
                 }
                 }
                 userSetting={userSetting}
             />
             <TasksModal initTask={task} taskListId={openTaskModal} handleClose={(task: Task) => {
-                console.log("close Task")
                 setOpenTaskModal(null)
                 setTask({} as Task)
                 updateTasks()
             }}
             />
-            data {JSON.stringify(taskLists, null, 2)}
-            user {JSON.stringify(userSetting, null, 2)}
+            <LoadingBackDrop
+                isOpen={backdropOpen}/>
+
         </div>
     );
 };

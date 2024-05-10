@@ -36,8 +36,8 @@ const Settings = () => {
 
     return (
         <Grid container spacing={0}>
-            <Grid item xs={6} md={6}>
-                <Box sx={{ml: '10%', mt: '5%', width: '25rem'}}>
+            <Grid item xs={5} md={5}>
+                <Box sx={{ml: '10%', mt: '5%', width: '15rem'}}>
                     <List component="nav" aria-label="main mailbox folders">
                         <ListItemButton
                             selected={selectedIndex === 0}
@@ -49,15 +49,6 @@ const Settings = () => {
 
                             <ListItemText primary="Profiles"/>
                         </ListItemButton>
-                        {/*<ListItemButton*/}
-                        {/*    selected={selectedIndex === 1}*/}
-                        {/*    onClick={(event) => handleListItemClick(event, 1)}*/}
-                        {/*>*/}
-                        {/*    <ListItemIcon>*/}
-                        {/*        <DraftsIcon/>*/}
-                        {/*    </ListItemIcon>*/}
-                        {/*    <ListItemText primary="Drafts"/>*/}
-                        {/*</ListItemButton>*/}
                     </List>
                     <Divider/>
                     <List component="nav" aria-label="secondary mailbox folder">

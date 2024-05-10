@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import {GoogleOAuthProvider} from '@react-oauth/google';
 import WeeklyCalendar from './components/calendar/WeeklyCalendar'; // We'll create this component next
-import {createBrowserRouter, RouterProvider,} from "react-router-dom";
+import {createHashRouter, RouterProvider,} from "react-router-dom";
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -15,9 +15,8 @@ import Profile from "./components/Profile";
 import Tasks from "./components/tasks/Tasks";
 import Recipes from "./components/recipes/Recipes";
 import Settings from "./components/settings/Settings";
-import {ThemeProvider, createTheme, createMuiTheme} from '@mui/material/styles';
+import {createTheme, ThemeProvider} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import {Backdrop, CircularProgress} from "@mui/material";
 import axios from "axios";
 import {LOCAL_STORE_KEYS} from "./components/Constants";
 import LoginModal from "./components/LoginModal";
@@ -41,7 +40,18 @@ function App() {
         family_name: string,
         picture: string
     ) => {
-        setCurrentAuthenticatedUser({name, token, refresh_token, expiration_ts, email, id, given_name, family_name, picture, toggleAuth})
+        setCurrentAuthenticatedUser({
+            name,
+            token,
+            refresh_token,
+            expiration_ts,
+            email,
+            id,
+            given_name,
+            family_name,
+            picture,
+            toggleAuth
+        })
     };
 
     const darkTheme = createTheme({
@@ -73,7 +83,7 @@ function App() {
         toggleAuth: toggleAuth
     });
 
-    const router = createBrowserRouter([
+    const router = createHashRouter([
         {
             path: "calendar",
             element: <><AuthChecker/><ResponsiveAppBar/><WeeklyCalendar/></>,

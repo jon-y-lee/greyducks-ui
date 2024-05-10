@@ -1,4 +1,5 @@
 export interface Event {
+    id?: string,
     status: string,
     start: EventDateTime,
     end: EventDateTime,

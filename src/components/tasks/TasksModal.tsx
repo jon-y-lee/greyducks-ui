@@ -8,7 +8,7 @@ import {TasksService} from "../../services/TasksService";
 
 interface TasksEditModalInterface {
     initTask: Task,
-    taskListId: String|null,
+    taskListId: string|null,
     handleClose: Function,
 }
 
@@ -28,6 +28,7 @@ const TasksModal = (tasksEditModalInterface: TasksEditModalInterface) => {
     const {handleClose, initTask, taskListId} = tasksEditModalInterface;
     const [backdropOpen, setBackdropOpen]: any = useState(false);
     const [task, setTask] = useState<Task>(initTask)
+    const [title, setTitle] = useState<String>(initTask?.title);
 
     useEffect(
         () => {
@@ -61,6 +62,7 @@ const TasksModal = (tasksEditModalInterface: TasksEditModalInterface) => {
                 <Typography id="modal-modal-description" sx={{mt: 2}}>
                     <TextField id="outlined-basic" label="Enter a title" variant="outlined"
                                value={task!!.title}
+                               onChange={(title) => setTitle(title.target.value)}
                                onBlur={(text: any) => {
                                    setTask({...task, title: text.target.value});
                                }}
@@ -71,7 +73,7 @@ const TasksModal = (tasksEditModalInterface: TasksEditModalInterface) => {
                     TasksService.createTask(taskListId!!, task).then((tl: any) => {
                         handleClose()
                     })
-                }} disabled={task?.title == null}>Add</Button>
+                }} disabled={title == null || title.length == 0}>Add</Button>
                 <Button onClick={() => {
                     handleClose()
                     }}>Cancel</Button>

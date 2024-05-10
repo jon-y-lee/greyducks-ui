@@ -2,10 +2,12 @@ import {getUserContextFromLocalStore, UserAuthentication} from "../contexts/auth
 import axios from "axios";
 import {Event} from "../contexts/event/Event";
 import {LOCAL_STORE_KEYS} from "../components/Constants";
+import {BASE_API_URI} from "./ServiceConstants";
 
 // const GOOGLE_CALENDAR_EVENTS_URI = 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
 // const API_URL = 'https://oauth2.googleapis.com/token'
-const API_URL = 'http://localhost:8081/token'
+// const API_URL = 'http://localhost:8081/token'
+const API_URL = BASE_API_URI + 'token'
 
 export const GoogleTokenService = {
 
