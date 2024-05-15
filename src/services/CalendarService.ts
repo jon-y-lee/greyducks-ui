@@ -1,15 +1,12 @@
-import {UserAuthentication} from "../contexts/auth/AuthContext";
 import axios from "axios";
 import {Event} from "../contexts/event/Event";
-import {LOCAL_STORE_KEYS} from "../components/Constants";
 import {BASE_API_URI} from "./ServiceConstants";
 
 const GOOGLE_CALENDAR_EVENTS_URI = 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
 const GOOGLE_CALENDAR_COLORS_URI = 'https://www.googleapis.com/calendar/v3/colors'
-// const API_URL = 'http://localhost:8081/events'
 const API_URL = BASE_API_URI + 'events'
 
-export const GoogleCalendarService = {
+export const CalendarService = {
 
     async getCalendarColors() {
         return axios
@@ -87,4 +84,19 @@ export const GoogleCalendarService = {
                 return res?.data;
             })
     },
+
+    async updateEvent(event: Event) {
+        return axios
+            .put(API_URL + "/" + event.id, event)
+            .catch(error => {
+                if (error?.response?.status == 401) {
+                    throw error;
+                }
+            })
+            .then((res) => {
+                console.log("result:" + JSON.stringify(res))
+                return res?.data;
+            })
+    },
+
 };

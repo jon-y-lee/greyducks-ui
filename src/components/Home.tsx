@@ -8,7 +8,7 @@ interface FooterLink {
 }
 
 const backgroundImages = {
-    backgroundImage1: 'url(logo512.png)',
+    backgroundImage1: 'url(ducks.png)',
     // backgroundImage2: 'url(public/logo512.png)',
     // backgroundImage3: 'url(public/logo512.png)',
 };
@@ -39,11 +39,11 @@ const Home = () => {
                     }}
                 >
                     <Typography align={"center"} variant="h5" style={{marginTop: '2rem', marginBottom: '2rem'}}>
-                        Our Mission
+                        Gray Ducks x Our Mission
                     </Typography>
                     <Typography variant="h4" gutterBottom>
                         <div className={'typewriter'}>
-                        Making Sunday Morning Planning Easier |
+                        Making Sunday Morning Planning Easier
                         </div>
                     </Typography>
                 </div>
@@ -53,7 +53,6 @@ const Home = () => {
                         textAlign: 'center',
                         height: '70vh',
                         backgroundImage: backgroundImages.backgroundImage1,
-                        // backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         display: 'flex',
                         flexDirection: 'column',
@@ -61,7 +60,8 @@ const Home = () => {
                     }}
                 >
                     <Typography variant="body1" style={{marginTop: '2rem', marginBottom: '2rem'}}>
-                        what is this
+
+
                     </Typography>
                 </div>
 

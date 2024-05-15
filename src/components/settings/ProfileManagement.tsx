@@ -5,7 +5,7 @@ import {Button, Card, CardHeader, Grid} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import AddIcon from '@mui/icons-material/Add'
 import ProfileManagementEditModal from "./ProfileManagementEditModal";
-import {GoogleCalendarService} from "../../services/GoogleCalendarService";
+import {CalendarService} from "../../services/CalendarService";
 import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -26,7 +26,7 @@ const ProfileManagement: React.FC<ProfileManagementPros> = ({settings, updateSet
     useEffect(() => {
         const token = userContext?.token ? userContext.token : getUserContextFromLocalStore().token;
 
-        GoogleCalendarService.getCalendarColors().then(calendarColors => {
+        CalendarService.getCalendarColors().then(calendarColors => {
             console.log('cal colors:' + JSON.stringify(calendarColors))
 
             setCalendarColors(calendarColors);

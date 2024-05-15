@@ -20,6 +20,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import axios from "axios";
 import {LOCAL_STORE_KEYS} from "./components/Constants";
 import LoginModal from "./components/LoginModal";
+import EventDrawer from "./components/calendar/EventDrawer";
 
 function App() {
 
@@ -33,7 +34,7 @@ function App() {
         name: string,
         token: string,
         refresh_token: string,
-        expiration_ts: string,
+        expiration_ts: number,
         email: string,
         id: string,
         given_name: string,
@@ -86,6 +87,10 @@ function App() {
     const router = createHashRouter([
         {
             path: "calendar",
+            element: <><AuthChecker/><ResponsiveAppBar/><WeeklyCalendar/></>,
+        },
+        {
+            path: "event/:id",
             element: <><AuthChecker/><ResponsiveAppBar/><WeeklyCalendar/></>,
         },
         {

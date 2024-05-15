@@ -16,6 +16,7 @@ import {Profile, UserService, UserSetting} from "../../services/UserService";
 import {Task, TaskList} from "../../contexts/tasks/Task";
 import {TasksService} from "../../services/TasksService";
 import MenuItem from "@mui/material/MenuItem";
+import Drawer from "@mui/material/Drawer";
 
 
 interface TasksListEditModalInterface {
@@ -49,7 +50,7 @@ const TasksListModal = (tasksEditModalInterface: TasksListEditModalInterface) =>
             if (initTaskList) {
                 setTaskList(initTaskList)
                 setTitle(initTaskList.title)
-                if (initTaskList?.assignedProfileId){
+                if (initTaskList?.assignedProfileId) {
                     setAssignedUser(initTaskList?.assignedProfileId)
                 }
             }
@@ -64,13 +65,25 @@ const TasksListModal = (tasksEditModalInterface: TasksListEditModalInterface) =>
     };
 
     return (
-        <Modal
+        // <Modal
+        //     open={open}
+        //     onClose={() => handleClose()}
+        //     aria-labelledby="modal-modal-title"
+        //     aria-describedby="modal-modal-description"
+        // >
+
+        <Drawer
+            anchor={'right'}
+            transitionDuration={700}
             open={open}
-            onClose={() => handleClose()}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
+            onClose={() => handleClose}
         >
-            <Box sx={style}>
+
+            <Box
+                // sx={style}
+                sx={{ width: { xs: '100%', md:'50vw' }, p: '1rem'}}
+
+            >
                 <Typography id="modal-modal-title" variant="h6" component="h2">
                     Add a new List
                 </Typography>
@@ -106,15 +119,15 @@ const TasksListModal = (tasksEditModalInterface: TasksListEditModalInterface) =>
                 <Button
                     disabled={title == null || title?.length == 0}
                     onClick={() => {
-                    taskList.title = title.toString();
-                    taskList.assignedProfileId = assignedUser.toString()
-                    TasksService.createOrUpdateTasks(taskList).then((tl: any) => {
-                        setTitle("")
-                        setAssignedUser("")
-                        handleClose(tl)
-                        setTaskList({} as TaskList)
-                    })
-                }}>Save</Button>
+                        taskList.title = title.toString();
+                        taskList.assignedProfileId = assignedUser.toString()
+                        TasksService.createOrUpdateTasks(taskList).then((tl: any) => {
+                            setTitle("")
+                            setAssignedUser("")
+                            handleClose(tl)
+                            setTaskList({} as TaskList)
+                        })
+                    }}>Save</Button>
                 <Button onClick={() => {
                     TasksService.deleteTaskList(taskList.id).then((tl: any) => {
                         setTitle("")
@@ -132,7 +145,7 @@ const TasksListModal = (tasksEditModalInterface: TasksListEditModalInterface) =>
                     <CircularProgress color="inherit"/>
                 </Backdrop>
             </Box>
-        </Modal>
+        </Drawer>
     );
 }
 

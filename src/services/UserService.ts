@@ -29,7 +29,6 @@ export const UserService = {
                 }
             })
             .then((res) => {
-                // console.log("User found " + JSON.stringify(res.data))
                 const userPrinciple = {
                     name: res.data?.name,
                     token: access_token,

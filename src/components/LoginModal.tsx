@@ -6,7 +6,7 @@ import {AuthContext, UserAuthentication} from '../contexts/auth/AuthContext';
 import {LOCAL_STORE_KEYS} from "./Constants";
 import {UserService} from "../services/UserService";
 import {isEmpty} from "radash";
-import {GoogleTokenService} from "../services/GoogleTokenService";
+import {TokenService} from "../services/TokenService";
 
 interface LoginModalInterface {
     open: boolean,
@@ -67,7 +67,7 @@ const LoginModal = (loginModalInterface: LoginModalInterface) => {
             if (!isEmpty(user)) {
                 console.log("LOG MODAL - USER:" + JSON.stringify(user.code))
 
-                GoogleTokenService.getAccessTokenFromCode(user.code).then((authorizedPrincipal: any) => {
+                TokenService.getAccessTokenFromCode(user.code).then((authorizedPrincipal: any) => {
                     console.log("authorizedPrincipal - USER:" + JSON.stringify(authorizedPrincipal))
 
                     const tokenStore = {
@@ -81,6 +81,7 @@ const LoginModal = (loginModalInterface: LoginModalInterface) => {
                     console.log("Getting  USER Profile:" + JSON.stringify(authorizedPrincipal))
 
                     UserService.userInfo(authorizedPrincipal.access_token).then(userPrinciple => {
+                        console.log("authorizedPrincipal?.refresh_token:" + JSON.stringify(authorizedPrincipal?.refresh_token))
 
                         var expiryDate = new Date();
                         expiryDate.setSeconds(expiryDate.getSeconds() + authorizedPrincipal?.expires_in);
@@ -90,7 +91,7 @@ const LoginModal = (loginModalInterface: LoginModalInterface) => {
                             token: userPrinciple?.token,
                             test: "asdfasdfasd",
                             refresh_token: authorizedPrincipal?.refresh_token,
-                            expiration_ts: expiryDate.toLocaleString(),
+                            expiration_ts: expiryDate.getTime(),
                             email: userPrinciple.email,
                             id: userPrinciple.id,
                             given_name: userPrinciple.given_name,

@@ -6,7 +6,10 @@ export interface Event {
     summary: string,
     recurrence: string,
     description: string
-    colorId: number
+    colorId: number,
+    assigneeId: string,
+    assigneeColor: string,
+    assigneeInitials: string,
 }
 
 export interface EventDateTime {

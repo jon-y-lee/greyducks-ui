@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Box, Button, Grid, Modal, TextField,} from '@mui/material';
 import Typography from "@mui/material/Typography";
-import {GoogleCalendarService} from "../../services/GoogleCalendarService";
+import {CalendarService} from "../../services/CalendarService";
 import {Event} from "../../contexts/event/Event"
 
 
@@ -49,6 +49,8 @@ const EventModal = (eventCreateModalInterface: EventCreateModalInterface) => {
         endTime: '',
         description: '',
         assignee: '',
+        assigneeInitials: '',
+        assigneeColor: '',
     });
 
     const resetForm = () => {
@@ -58,6 +60,8 @@ const EventModal = (eventCreateModalInterface: EventCreateModalInterface) => {
             endTime: '',
             description: '',
             assignee: '',
+            assigneeInitials: '',
+            assigneeColor: '',
         })
     }
 
@@ -135,7 +139,7 @@ const EventModal = (eventCreateModalInterface: EventCreateModalInterface) => {
                         />
                     </Grid>
                 </Grid>
-
+                {formData.startTime}
                 <Button type="submit" onClick={() => {
                     var event: Event = {
                         status: 'confirmed',
@@ -150,10 +154,13 @@ const EventModal = (eventCreateModalInterface: EventCreateModalInterface) => {
                         summary: formData.summary,
                         recurrence: 'false',
                         description: formData.description,
-                        colorId: 0
+                        colorId: 0,
+                        assigneeId: formData.assignee,
+                        assigneeInitials: formData.assignee,
+                        assigneeColor: formData.assigneeColor
                     }
 
-                    GoogleCalendarService.createEvent(event).then(res => {
+                    CalendarService.createEvent(event).then(res => {
                         console.log("Successfully saved event");
                         resetForm()
                         handleClose()

@@ -3,7 +3,7 @@ import {AuthContext} from "../contexts/auth/AuthContext";
 
 const Profile = () => {
 
-    console.log("calendar")
+    // console.log("calendar")
     const [token, setToken] = useState("");
     const responseGoogle = (response: any) => {
         console.log(response);

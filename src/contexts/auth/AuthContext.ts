@@ -5,7 +5,7 @@ export interface UserAuthentication {
     name: string | null,
     token: string | null,
     refresh_token: string | null,
-    expiration_ts: string | null,
+    expiration_ts: number | null,
     email: string | null,
     id:string | null,
     given_name: string | null,

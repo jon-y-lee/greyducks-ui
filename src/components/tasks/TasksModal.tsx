@@ -4,11 +4,12 @@ import Typography from "@mui/material/Typography";
 import {Profile, UserService, UserSetting} from "../../services/UserService";
 import {Task, TaskList} from "../../contexts/tasks/Task";
 import {TasksService} from "../../services/TasksService";
+import Drawer from "@mui/material/Drawer";
 
 
 interface TasksEditModalInterface {
     initTask: Task,
-    taskListId: string|null,
+    taskListId: string | null,
     handleClose: Function,
 }
 
@@ -39,7 +40,7 @@ const TasksModal = (tasksEditModalInterface: TasksEditModalInterface) => {
 
                 setTask({...initTask, taskListId: taskListId!!})
             }
-        },[initTask, taskListId]
+        }, [initTask, taskListId]
     );
 
     const [taskName, setTaskName] = React.useState('');
@@ -49,13 +50,24 @@ const TasksModal = (tasksEditModalInterface: TasksEditModalInterface) => {
     };
 
     return (
-        <Modal
+        // <Modal
+        //     open={taskListId != null}
+        //     onClose={() => handleClose()}
+        //     aria-labelledby="modal-modal-title"
+        //     aria-describedby="modal-modal-description"
+        // >
+        <Drawer
+            anchor={'right'}
+            transitionDuration={700}
             open={taskListId != null}
-            onClose={() => handleClose()}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
+            onClose={() => handleClose}
         >
-            <Box sx={style}>
+
+            <Box
+                // sx={style}
+                sx={{ width: { xs: '100%', md:'50vw' }, p: '1rem'}}
+
+            >
                 <Typography id="modal-modal-title" variant="h6" component="h2">
                     Add a new Task
                 </Typography>
@@ -76,7 +88,7 @@ const TasksModal = (tasksEditModalInterface: TasksEditModalInterface) => {
                 }} disabled={title == null || title.length == 0}>Add</Button>
                 <Button onClick={() => {
                     handleClose()
-                    }}>Cancel</Button>
+                }}>Cancel</Button>
                 <Backdrop
                     sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
                     open={backdropOpen}
@@ -85,7 +97,7 @@ const TasksModal = (tasksEditModalInterface: TasksEditModalInterface) => {
                     <CircularProgress color="inherit"/>
                 </Backdrop>
             </Box>
-        </Modal>
+        </Drawer>
     );
 }
 
