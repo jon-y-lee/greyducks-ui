@@ -52,8 +52,7 @@ export const CalendarService = {
                 const weeklyEventMap = new Map<number, Event[]>();
                 res?.data['items'].map((item: any) => {
                     const startDateTime = new Date(item.start.dateTime);
-                    const endDateTime = new Date(item.start.dateTime);
-                    const startDate = startDateTime.getDay();
+                    const startDate = startDateTime.getDate();
 
                     let eventList = weeklyEventMap.get(startDate);
 
@@ -80,7 +79,6 @@ export const CalendarService = {
                 }
             })
             .then((res) => {
-                console.log("result:" + JSON.stringify(res))
                 return res?.data;
             })
     },

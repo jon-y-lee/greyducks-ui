@@ -1,21 +1,23 @@
 //
-export function getSundayOfCurrentWeek() {
-    let currentDate = new Date(); // Get the current date and time
-    let currentDayOfWeek = currentDate.getDay(); // Sunday - 0, Monday - 1, ..., Saturday - 6
-    let distanceToSunday = currentDayOfWeek; // Since Sunday is 0, this is the distance to go back
+// export function getSundayOfCurrentWeek(date? : Date) {
+//     let currentDate = date ? date : new Date(); // Get the current date and time
+//     let currentDayOfWeek = currentDate.getDay(); // Sunday - 0, Monday - 1, ..., Saturday - 6
+//     let distanceToSunday = currentDayOfWeek; // Since Sunday is 0, this is the distance to go back
+//
+//     // Create a new date object for the Sunday of the current week
+//     let sundayOfCurrentWeek = new Date(currentDate.getTime());
+//     sundayOfCurrentWeek.setDate(sundayOfCurrentWeek.getDate() - distanceToSunday);
+//
+//     // Reset hours, minutes, seconds, and milliseconds to get the start of the day
+//     sundayOfCurrentWeek.setHours(0, 0, 0, 0);
+//
+//     return sundayOfCurrentWeek;
+// }
 
-    // Create a new date object for the Sunday of the current week
-    let sundayOfCurrentWeek = new Date(currentDate.getTime());
-    sundayOfCurrentWeek.setDate(sundayOfCurrentWeek.getDate() - distanceToSunday);
+import {startOfWeek} from "date-fns";
 
-    // Reset hours, minutes, seconds, and milliseconds to get the start of the day
-    sundayOfCurrentWeek.setHours(0, 0, 0, 0);
-
-    return sundayOfCurrentWeek;
-}
-
-export function getSaturdayOfCurrentWeek() {
-    let currentDate = new Date(); // Get the current date and time
+export function getSaturdayOfCurrentWeek(date? : Date) {
+    let currentDate = date ? date : new Date(); // Get the current date and time
     let currentDayOfWeek = currentDate.getDay(); // Sunday - 0, Monday - 1, ..., Saturday - 6
     let distanceToSunday = currentDayOfWeek; // Since Sunday is 0, calculate the distance back to Sunday
 
@@ -34,8 +36,8 @@ export function getSaturdayOfCurrentWeek() {
     return saturdayOfCurrentWeek;
 }
 
-export function getCurrentWeek() {
-    const today = new Date();
+export function getCurrentWeek(date? : Date) {
+    const today = date ? date : new Date();
     const dayOfWeek = today.getDay(); // Sunday - 0, Monday - 1, etc.
     const currentDate = today.getDate();
     const daysSinceSunday = dayOfWeek; // Since Sunday is considered the first day
@@ -65,6 +67,22 @@ export function getCurrentWeek() {
     console.log(weekDates);
     return weekDates;
 
+}
+
+export function getWeekHeaderInfo() {
+    const date = startOfWeek(new Date());
+    // Print the date for each day of the week
+    const weekDates: any = {};
+    for (let i = 0; i < 7; i++) {
+        weekDates[i] = {
+            day: date.toLocaleString('en-us',
+                {
+                    weekday: 'short'
+                }),
+        };
+        date.setDate(date.getDate() + 1);
+    }
+    return weekDates;
 }
 
 // Helper function to format date as YYYY-MM-DD

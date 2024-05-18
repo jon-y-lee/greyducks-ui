@@ -1,6 +1,4 @@
 import axios from "axios";
-import {UserAuthentication} from "../contexts/auth/AuthContext";
-import {LOCAL_STORE_KEYS} from "../components/Constants";
 import {BASE_API_URI} from "./ServiceConstants";
 
 const API_URL = BASE_API_URI

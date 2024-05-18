@@ -20,7 +20,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import axios from "axios";
 import {LOCAL_STORE_KEYS} from "./components/Constants";
 import LoginModal from "./components/LoginModal";
-import EventDrawer from "./components/calendar/EventDrawer";
+import Calendar from "./components/calendar/Calendar";
 
 function App() {
 
@@ -87,7 +87,7 @@ function App() {
     const router = createHashRouter([
         {
             path: "calendar",
-            element: <><AuthChecker/><ResponsiveAppBar/><WeeklyCalendar/></>,
+            element: <><AuthChecker/><ResponsiveAppBar/><Calendar/></>,
         },
         {
             path: "event/:id",
@@ -134,6 +134,13 @@ function App() {
         }
         return request;
     })
+
+    // const instance = axios.defaults ? axios as AxiosCacheInstance : setupCache(axios);
+    //
+    // setupCache(axios, {
+    //     methods: ['get'],
+    //     ttl: 60
+    // });
 
     return (
         <div className={"App"}>

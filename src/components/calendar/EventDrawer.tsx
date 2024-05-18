@@ -45,9 +45,9 @@ const EventDrawer = (eventDrawerInterface: EventDrawerInterface) => {
     }, [id])
 
     useEffect(() => {
-        console.log("Recipe chnages: " + JSON.stringify(event))
+        console.log("Event chnages: " + JSON.stringify(event))
         if (event != null) {
-            console.log('time:' + event?.start?.dateTime)
+            console.log('event?.assigneeId:' + event?.assigneeId)
             setFormData({
                 summary: event?.summary,
                 startTime: event?.start?.dateTime?.replace(":00-05:00", ""),
@@ -66,6 +66,7 @@ const EventDrawer = (eventDrawerInterface: EventDrawerInterface) => {
     };
     const handleChange = (event: any) => {
         const {name, value} = event.target;
+        console.log("handle change........................" + name)
         setFormData({...formData, [name]: value});
     };
 
@@ -161,13 +162,11 @@ const EventDrawer = (eventDrawerInterface: EventDrawerInterface) => {
                             <Grid item xs={12}>
 
                                 <Typography id="modal-modal-assigned" variant="h6" component="h2" sx={{mt: 2}}>
-                                    Who's event is this for?
+                                    Who's event is this for? {formData.assignee}
 
                                     <FormControl fullWidth>
                                         <InputLabel>Pick a user</InputLabel>
                                         <Select
-                                            labelId="demo-simple-select-label"
-                                            id="demo-simple-select"
                                             value={formData.assignee}
                                             label="Assigned"
                                             name="assignee"
@@ -176,7 +175,6 @@ const EventDrawer = (eventDrawerInterface: EventDrawerInterface) => {
                                             {userSetting?.profiles?.map((profile: Profile) => {
                                                 return (<MenuItem value={profile.id}>{profile.name}</MenuItem>)
                                             })}
-
                                         </Select>
                                     </FormControl>
                                 </Typography>
@@ -208,7 +206,7 @@ const EventDrawer = (eventDrawerInterface: EventDrawerInterface) => {
 
                             console.log("Request:" + JSON.stringify(requestEvent))
                             if (requestEvent.id == null) {
-                                CalendarService.createEvent({...event, ...newEvent}).then(res => {
+                                    CalendarService.createEvent({...event, ...newEvent}).then(res => {
                                     console.log("Successfully saved event");
                                     resetForm()
                                     handleClose()

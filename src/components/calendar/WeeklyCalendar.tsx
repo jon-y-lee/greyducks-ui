@@ -1,36 +1,40 @@
 import React, {useEffect, useState} from 'react';
-import {Card, CardContent, CardHeader, Grid} from "@mui/material";
+import {Avatar, Card, CardContent, CardHeader, Grid} from "@mui/material";
 import {Event} from "../../contexts/event/Event"
 import Typography from "@mui/material/Typography";
-import {getCurrentWeek, getSaturdayOfCurrentWeek, getSundayOfCurrentWeek} from "../../utils/DateUtils";
+import {getCurrentWeek} from "../../utils/DateUtils";
 import {CalendarService} from "../../services/CalendarService";
-import {useNavigate} from "react-router-dom";
 import Box from "@mui/material/Box";
 import {isEmpty} from "radash";
 import LoadingBackDrop from "../backdrops/LoadingBackDrop";
 import FloatingAddButton from "../FloatingAddButton";
 import EventDrawer from "./EventDrawer";
 import {UserService, UserSetting} from "../../services/UserService";
+import {endOfWeek, startOfWeek} from "date-fns";
 
-const WeeklyCalendar = () => {
+interface WeeklyCalendarInterface {
+    date?: Date
+}
 
+const WeeklyCalendar = (weeklyCalendarInterface: WeeklyCalendarInterface) => {
+
+    const {date} = weeklyCalendarInterface;
     const [weeklyEvents, setWeeklyEvents] = useState<Map<number, Event[]>>(new Map());
     const [calendarColors, setCalendarColors] = useState<any>({});
-    const navigate = useNavigate();
     const [currentWeek, setCurrentWeek] = useState<any>({});
     const [backdropOpen, setBackdropOpen]: any = useState(false);
-    // const [openEventModal, setOpenEventModal] = useState(false)
     const [openEventInfoDrawer, setOpenEventInfoDrawer] = useState(false)
     const [selectedEvent, setSelectedEvent] = useState({} as Event)
     const [userSetting, setUserSettings] = useState<UserSetting>({} as UserSetting)
 
     useEffect(() => {
+        setWeeklyEvents(new Map())
         refreshEvents()
     }, [currentWeek, calendarColors])
 
     useEffect(() => {
-
-        setCurrentWeek(getCurrentWeek());
+        console.log("Refreshing new date")
+        setCurrentWeek(getCurrentWeek(date));
 
         UserService.userSettings().then(userSettingsResponse => {
             setUserSettings(userSettingsResponse)
@@ -41,26 +45,27 @@ const WeeklyCalendar = () => {
         }).catch(error => {
             console.log(error);
         })
-    }, [])
+
+        refreshEvents()
+    }, [date])
 
     const refreshEvents = () => {
-        const sunday = getSundayOfCurrentWeek();
-        const saturday = getSaturdayOfCurrentWeek();
 
+        const sunday = startOfWeek(date!!);
+        const saturday = endOfWeek(date!!);
+
+        console.log("Sunday:" + sunday.toLocaleString())
+        console.log("saturday:" + saturday.toLocaleString())
         if (isEmpty(sunday) || isEmpty(saturday)) return;
 
         setBackdropOpen(true)
         CalendarService.getCalendarEvents(sunday.toISOString(), saturday.toISOString()).then((events: Map<number, Event[]>) => {
-            console.log("********** CALENDARD EVENTS")
-
-            // let keys = events.keys();
             UserService.userSettings().then(userSettingsResponse => {
                 events.forEach((values, key) => {
-                    console.log(values, key)
                     for (var profile of userSettingsResponse?.profiles) {
                         for (var event of values) {
                             if (profile.id == event?.assigneeId) {
-                                console.log("assignee color:" + profile.color)
+                                event.assigneeId = profile.id
                                 event.assigneeColor = profile.color
                                 event.assigneeInitials = profile.name
                             }
@@ -135,11 +140,6 @@ const WeeklyCalendar = () => {
 
     return (
         <div>
-            <Typography textAlign={"center"} variant={"h3"} pl={'5vw'}>{new Date().toLocaleString('en-us',
-                {
-                    month: 'long'
-                })}</Typography>
-            <br/>
             <div>
                 <Grid container spacing={0} sx={{padding: '6px'}}>
                     {
@@ -152,12 +152,19 @@ const WeeklyCalendar = () => {
                                     </Typography>
                                     <Typography
                                         sx={{display: "inline-block", textAlign: 'right', pr: '1vw', fontSize: 15}}>
-                                        {dayInfo?.date}
+                                        {new Date().getDate() == dayInfo?.date ?
+                                            <Avatar sizes={'small'} sx={{backgroundColor: 'darkolivegreen'}}>
+                                                {dayInfo?.date}
+                                            </Avatar>
+                                            :
+                                            <>{dayInfo?.date}</>
+                                        }
+
                                     </Typography>
 
-                                    <Box sx={{p: '0.2vw', height: '100vh', overflow: 'scroll'}}>
+                                    <Box sx={{p: '0.2vw', height: {md:'70vh'}, overflow: 'scroll'}}>
                                         {
-                                            extractWeeklyEvents(dayInfo?.id)?.map((event: Event) => {
+                                            extractWeeklyEvents(dayInfo?.date)?.map((event: Event) => {
                                                 return formatEventCard(event);
                                             })
                                         }
@@ -171,26 +178,15 @@ const WeeklyCalendar = () => {
             </div>
             <LoadingBackDrop
                 isOpen={backdropOpen}/>
-            {/*<EventModal open={openEventModal} handleClose={() => {*/}
-            {/*    setOpenEventModal(false)*/}
-            {/*    refreshEvents()*/}
-            {/*}}*/}
-            {/*            event={null}*/}
-            {/*            handleCancel={() => {*/}
-            {/*                setOpenEventModal(false)*/}
-            {/*            }}*/}
-            {/*/>*/}
             <FloatingAddButton setOpen={() => setOpenEventInfoDrawer(true)}/>
             <EventDrawer open={openEventInfoDrawer}
                          userSetting={userSetting}
                          event={selectedEvent}
                          handleCancel={() => {
-                             console.log("cancel")
                              setOpenEventInfoDrawer(false)
                              setSelectedEvent({} as Event)
                          }}
                          handleClose={() => {
-                             console.log("close")
                              setOpenEventInfoDrawer(false)
                              setSelectedEvent({} as Event)
                          }}
