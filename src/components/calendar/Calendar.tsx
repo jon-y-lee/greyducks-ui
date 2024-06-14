@@ -65,7 +65,7 @@ const Calendar = () => {
                         <IconButton onClick={() => {
                             console.log("previous")
                             const prev = new Date(date);
-                            if (calendarScope == 50) {
+                            if (calendarScope == 0) {
                                 prev.setDate(date.getDate() - 7);
                             } else if (calendarScope == 100) {
                                 prev.setMonth(date.getMonth() - 1);
@@ -84,7 +84,7 @@ const Calendar = () => {
                         </Typography>
                         <IconButton onClick={() => {
                             const prev = new Date(date);
-                            if (calendarScope == 50) {
+                            if (calendarScope == 0) {
                                 prev.setDate(date.getDate() + 7);
                             } else if (calendarScope == 100) {
                                 prev.setMonth(date.getMonth() + 1);

@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import EditIcon from '@mui/icons-material/Edit';
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
-
+import NoFoodIcon from '@mui/icons-material/NoFood';
 const Recipes = () => {
 
     const userContext = useContext(AuthContext);
@@ -31,6 +31,18 @@ const Recipes = () => {
 
     return (
         <>
+            {recipes?.length == 0 ?
+                <Grid ml={5} mt={3} mr={5} item xs={12} md={6} lg={3} xl={3}>
+                    <NoFoodIcon fontSize={"large"} sx={{mb: '3rem', mt: '3rem'}}/>
+                    <Typography variant="h5" color="text.secondary" sx={{textAlign: 'center'}}>
+                        Oh no!  You don't have any personal recipes.
+                    </Typography>
+                    <Typography variant="h4" color="text.secondary" sx={{textAlign: 'center'}}>
+                        Lets Create One!
+                    </Typography>
+                </Grid>
+                : null }
+
             <Grid  container spacing={1}>
                 {recipes?.map((recipe: Recipe) => {
                     return (

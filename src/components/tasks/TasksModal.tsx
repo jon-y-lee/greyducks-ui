@@ -50,12 +50,6 @@ const TasksModal = (tasksEditModalInterface: TasksEditModalInterface) => {
     };
 
     return (
-        // <Modal
-        //     open={taskListId != null}
-        //     onClose={() => handleClose()}
-        //     aria-labelledby="modal-modal-title"
-        //     aria-describedby="modal-modal-description"
-        // >
         <Drawer
             anchor={'right'}
             transitionDuration={700}
@@ -64,9 +58,7 @@ const TasksModal = (tasksEditModalInterface: TasksEditModalInterface) => {
         >
 
             <Box
-                // sx={style}
                 sx={{ width: { xs: '100%', md:'50vw' }, p: '1rem'}}
-
             >
                 <Typography id="modal-modal-title" variant="h6" component="h2">
                     Add a new Task
@@ -75,6 +67,7 @@ const TasksModal = (tasksEditModalInterface: TasksEditModalInterface) => {
                     <TextField id="outlined-basic" label="Enter a title" variant="outlined"
                                value={task!!.title}
                                onChange={(title) => setTitle(title.target.value)}
+                               inputProps={{maxLength: 25}}
                                onBlur={(text: any) => {
                                    setTask({...task, title: text.target.value});
                                }}

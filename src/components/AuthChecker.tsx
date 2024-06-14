@@ -36,7 +36,7 @@ const AuthChecker = () => {
                         let user = {
                             name: userPrinciple?.name,
                             token: userPrinciple?.token,
-                            refresh_token: data.access_token,
+                            refresh_token: data?.access_token,
                             expiration_ts: expiryDate.getTime(),
                             email: userPrinciple.email,
                             id: userPrinciple.id,

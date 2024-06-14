@@ -1,21 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {
-    Box,
-    Button, CardActions,
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Modal,
-    Select,
-    TextField,
-} from '@mui/material';
+import {Box, Button, FormControl, InputLabel, MenuItem, Select, SwipeableDrawer, TextField,} from '@mui/material';
 import Typography from "@mui/material/Typography";
 import {Ingredient, Instruction, Recipe} from '../../contexts/recipes/Recipe';
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from '@mui/icons-material/Delete';
-import {Profile, UserService, UserSetting} from "../../services/UserService";
 import {RecipeService} from "../../services/RecipeService";
 import AddIcon from '@mui/icons-material/Add'
+import Drawer from "@mui/material/Drawer";
 
 
 interface RecipeCreateModalInterface {
@@ -24,18 +15,6 @@ interface RecipeCreateModalInterface {
     handleClose: Function,
 }
 
-const style = {
-    position: 'absolute' as 'absolute',
-    top: '25%',
-    left: '30%',
-    transform: 'translate(-25%, -25%)',
-    width: '80vw',
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-};
-
 const RecipeModal = (recipeCreateModalInterface: RecipeCreateModalInterface) => {
     const {handleClose, recipe, open} = recipeCreateModalInterface;
 
@@ -43,10 +22,6 @@ const RecipeModal = (recipeCreateModalInterface: RecipeCreateModalInterface) => 
         console.log("Recipe chnages: " + JSON.stringify(recipe))
         if (recipe != null) {
             setForm(recipe);
-
-            // if (recipe.ingredients?.length == 0) {
-            //     handleAddIngredient()
-            // }
         } else {
             handleAddIngredient()
         }
@@ -54,11 +29,14 @@ const RecipeModal = (recipeCreateModalInterface: RecipeCreateModalInterface) => 
     }, [recipe])
 
     const unitOptions = [
-        'grams',
         'cups',
+        'teaspoons',
         'tablespoons',
         'pieces',
-        'liters'
+        'liters',
+        'gallons',
+        'oz',
+        'grams',
     ];
 
     const [form, setForm] = useState<Recipe>(recipe || {} as Recipe);
@@ -93,7 +71,7 @@ const RecipeModal = (recipeCreateModalInterface: RecipeCreateModalInterface) => 
         setForm({...form, instructions: values});
     };
 
-    const handleRemoveInstruction= (index: any) => {
+    const handleRemoveInstruction = (index: any) => {
         let values = form.instructions || [] as Instruction[];
         values.splice(index, 1);
         setForm({...form, instructions: values});
@@ -122,17 +100,23 @@ const RecipeModal = (recipeCreateModalInterface: RecipeCreateModalInterface) => 
     const handleSubmit = (event: any) => {
         event.preventDefault();
         console.log(form);
+        resetForm()
     };
 
-    return (
-        <Modal
-            open={open}
-            onClose={() => handleClose()}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-        >
+    const resetForm = () => {
+        setForm({} as Recipe)
+    }
 
-            <Box component="form" onSubmit={handleSubmit} sx={style}>
+    return (
+        <Drawer
+            anchor={'right'}
+            transitionDuration={700}
+            open={open}
+            onClose={() => handleClose}
+        >
+            <Box component="form" onSubmit={handleSubmit}
+                 sx={{width: {xs: '100%', md: '75vw'}, p: '1rem'}}
+            >
                 <Typography variant="h4" sx={{mb: 2}}>Recipe Form</Typography>
                 <TextField
                     fullWidth
@@ -205,20 +189,25 @@ const RecipeModal = (recipeCreateModalInterface: RecipeCreateModalInterface) => 
                         </IconButton>
                     </Box>
                 ))}
-                Instruction<IconButton onClick={handleAddInstruction}><AddIcon sx={{borderRadius: "28px"}}/></IconButton>
+                Instruction<IconButton onClick={handleAddInstruction}><AddIcon
+                sx={{borderRadius: "28px"}}/></IconButton>
 
                 <br/>
 
                 <Button type="submit" onClick={() => {
                     RecipeService.saveRecipe(form).then((response) => {
                         handleClose()
+                        resetForm()
                     })
                 }}>Save</Button>
                 <Button onClick={() => {
                     handleClose()
+                    resetForm()
                 }}>Cancel</Button>
             </Box>
-        </Modal>
+        </Drawer>
+        // </Drawer>
+        // </div>
     );
 }
 

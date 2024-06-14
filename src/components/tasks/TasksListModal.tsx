@@ -65,13 +65,6 @@ const TasksListModal = (tasksEditModalInterface: TasksListEditModalInterface) =>
     };
 
     return (
-        // <Modal
-        //     open={open}
-        //     onClose={() => handleClose()}
-        //     aria-labelledby="modal-modal-title"
-        //     aria-describedby="modal-modal-description"
-        // >
-
         <Drawer
             anchor={'right'}
             transitionDuration={700}
@@ -80,9 +73,7 @@ const TasksListModal = (tasksEditModalInterface: TasksListEditModalInterface) =>
         >
 
             <Box
-                // sx={style}
                 sx={{ width: { xs: '100%', md:'50vw' }, p: '1rem'}}
-
             >
                 <Typography id="modal-modal-title" variant="h6" component="h2">
                     Add a new List
@@ -90,6 +81,7 @@ const TasksListModal = (tasksEditModalInterface: TasksListEditModalInterface) =>
                 <Typography id="modal-modal-description" sx={{mt: 2}}>
                     <TextField id="outlined-basic" label="Enter a Name" variant="outlined"
                                value={title}
+
                                onChange={(title) => setTitle(title.target.value)}
                                onBlur={(text: any) => {
                                    setTaskList({...taskList, title: text.target.value});
@@ -136,6 +128,9 @@ const TasksListModal = (tasksEditModalInterface: TasksListEditModalInterface) =>
                         setTaskList({} as TaskList)
                     })
                 }}>Delete</Button>
+                <Button onClick={() => {
+                    handleClose()
+                }}>Cancel</Button>
 
                 <Backdrop
                     sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}

@@ -130,7 +130,6 @@ const WeeklyCalendar = (weeklyCalendarInterface: WeeklyCalendarInterface) => {
                     <Typography variant="body2" color="text.secondary">
                         {event.summary ? event.summary : "No Title"}<br/>
                         {event.description}
-                        {event.assigneeInitials} - {event.assigneeColor}
                     </Typography>
                 </CardContent>
 
